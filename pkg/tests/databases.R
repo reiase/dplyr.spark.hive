@@ -1,20 +1,33 @@
+# Copyright 2015 Revolution Analytics
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 # derivative of dplyr introductory material, http://github.com/hadley/dplyr
 # presumably under MIT license
 
 library(dplyr)
 library(dplyr.spark)
-Sys.setenv(
-HADOOP_JAR =
-"/Users/antonio/Projects/Revolution/spark/assembly/target/scala-2.10/spark-assembly-1.5.0-SNAPSHOT-hadoop2.4.0.jar")
 
 my_db = src_SparkSQL()
 
 library(nycflights13)
-flights = copy_to(my_db, flights, temporary = TRUE)
-flights = tbl(my_db, "flights")
+flights = {
+  if(db_has_table(my_db$con, "flights"))
+    tbl(my_db, "flights")
+  else
+    copy_to(my_db, flights, temporary = FALSE)}
 flights
-
-tbl(my_db, sql("SELECT * FROM flights"))
+cache(flights)
 
 ## ------------------------------------------------------------------------
 select(flights, year:day, dep_delay, arr_delay)
@@ -30,20 +43,12 @@ c4 = arrange(c3, year, month, day, carrier)
 
 c4
 
-collect(c4)
-
+collect(c4, name = "c4", temporary = FALSE)
 c4$query
 
 explain(c4)
 
-by_tailnum = group_by(flights, tailnum)
-delay = summarise(by_tailnum,
-  count = n(),
-  dist = mean(distance),
-  delay = mean(arr_delay))
-delay = filter(delay, count > 20, dist < 2000)
-delay_local = collect(delay)
-delay_local
+db_drop_table(my_db$con, "c4")
 
 
 daily = group_by(flights, year, month, day)
@@ -110,12 +115,16 @@ summarise(
 # sample_n(flights, 10)
 # sample_frac(flights, 0.01)
 
+
+
 by_tailnum = group_by(flights, tailnum)
 delay = summarise(by_tailnum,
-                   count = n(),
-                   dist = mean(distance),
-                   delay = mean(arr_delay))
+                  count = n(),
+                  dist = mean(distance),
+                  delay = mean(arr_delay))
 delay = filter(delay, count > 20, dist < 2000)
+delay_local = collect(delay)
+delay_local
 
 ggplot(
   collect(delay),
@@ -130,11 +139,8 @@ summarise(
   planes = n_distinct(tailnum),
   flights = n())
 
-daily = group_by(flights, year, month, day)
 (per_day   = summarise(daily, flights = n()))
-#broken too many open files
 (per_month = summarise(per_day, flights = sum(flights)))
-#broken too many open files
 (per_year  = summarise(per_month, flights = sum(flights)))
 
 a1 = group_by(flights, year, month, day)
@@ -150,7 +156,7 @@ a4
 filter(
   summarise(
     select(
-      group_by(flights, year, month, day),
+      daily,
       arr_delay, dep_delay),
     arr = mean(arr_delay),
     dep = mean(dep_delay)),

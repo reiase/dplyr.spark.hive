@@ -12,8 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+library(dplyr)
+library(dplyr.spark)
 library(quickcheck)
+
+my_db = src_SparkSQL()
+
 
 sql_colnames =
   function(x)
@@ -136,13 +140,12 @@ cmp =
     isTRUE(all.equal(x, y))}
 
 equiv.test =
-  function(expr.gen, dfgen = rsupported.data.frame){
+  function(expr.gen, dfgen = rsupported.data.frame, src = src){
     test(
       forall(
         x = dfgen(),
         rx = expr.gen(x),
-        name = dplyr:::random_table_name(),
-        src = src_SparkSQL(), {
+        name = dplyr:::random_table_name(), {
           retval =
             cmp(
               rx(x),
@@ -152,8 +155,8 @@ equiv.test =
       about = deparse(substitute(expr.gen)))}
 
 
-equiv.test(rselect)
-equiv.test(rarrange)
-equiv.test(rmutate)
-equiv.test(rfilter)
-equiv.test(rgroup_by_summarize, rnumeric.data.frame)
+equiv.test(rselect, src = my_db)
+equiv.test(rarrange, src = my_db)
+equiv.test(rmutate, src = my_db)
+equiv.test(rfilter, src = my_db)
+equiv.test(rgroup_by_summarize, rnumeric.data.frame, src = my_db)

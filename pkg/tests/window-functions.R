@@ -1,12 +1,36 @@
+# Copyright 2015 Revolution Analytics
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
+# derivative of dplyr introductory material, http://github.com/hadley/dplyr
+# presumably under MIT licenselibrary(dplyr)
+
+library(dplyr)
+library(dplyr.spark)
+
+my_db = src_SparkSQL()
 
 
 library(Lahman)
-batting = copy_to(my_db, Batting)
+{if(db_has_table(my_db$con, "batting"))
+  batting = tbl(my_db, "batting")
+else
+  batting = copy_to(my_db, Batting)}
 batting <- select(batting, playerid, yearid, teamid, g, ab:h)
 batting <- arrange(batting, playerid, yearid, teamid)
 players <- group_by(batting, playerid)
-
+cache(batting)
+cache(players)
 # For each player, find the two years with most hits
 filter(players, min_rank(desc(h)) <= 2 & h > 0)
 # Within each player, rank each year by the number of games played
