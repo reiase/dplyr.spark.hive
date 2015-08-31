@@ -26,10 +26,15 @@ db_has_table.SparkSQLConnection =
 
 db_query_fields.SparkSQLConnection =
   function(con, sql)
-    names(
-      dbGetQuery(
-        con,
-        build_sql("SELECT * FROM ", sql, " LIMIT 0", con = con)))
+    unlist(
+      map(
+        strsplit(
+          names(
+            dbGetQuery(
+              con,
+              build_sql("SELECT * FROM ", sql, " LIMIT 0", con = con))),
+          split = "\\."),
+        2))
 
 db_explain.SparkSQLConnection = dplyr:::db_explain.MySQLConnection
 
