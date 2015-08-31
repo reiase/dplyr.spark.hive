@@ -18,7 +18,7 @@ setClass(
 
 db_list_tables.SparkSQLConnection =
   function(con)
-    dbGetQuery(con, "show tables")$tableName
+    dbGetQuery(con, "show tables")[,1]
 
 db_has_table.SparkSQLConnection =
   function(con, table)
