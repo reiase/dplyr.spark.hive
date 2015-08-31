@@ -96,7 +96,16 @@ db_create_index.SparkSQLConnection =
 db_create_table.SparkSQLConnection =
   function(con, table, types, temporary = TRUE, ...) {
     table = tolower(table)
-    dplyr:::db_create_table.DBIConnection(con, table, types, temporary, ...)}
+    stopifnot(is.character(table) && length(table) == 1)
+    stopifnot(is.character(types))
+    field_names <- escape(ident(names(types)), collapse = NULL,
+                          con = con)
+    fields <- dplyr:::sql_vector(paste0(field_names, " ", types), parens = TRUE,
+                         collapse = ", ", con = con)
+    sql <- build_sql("CREATE ", if (temporary)
+      sql("TEMPORARY "), "TABLE ", ident(table), " ", fields,
+      con = con)
+    DBI::dbSendQuery(con, sql)}
 
 db_save_query.SparkSQLConnection =
   function(con, sql, name, temporary = TRUE, ...){
