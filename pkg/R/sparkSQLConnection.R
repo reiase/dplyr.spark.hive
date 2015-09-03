@@ -49,6 +49,16 @@ db_commit.SparkSQLConnection =
 db_rollback.SparkSQLConnection =
   function(con, ...) TRUE
 
+db_drop_table.SparkSQLConnection =
+  function (con, table, force = FALSE, ...) {
+  sql =
+    build_sql(
+      "DROP TABLE ",
+      if (force) sql("IF EXISTS "),
+      ident(table),
+      con = con)
+  RJDBC::dbSendUpdate(con, sql)}
+
 setMethod(
   "dbDataType",
   signature = "SparkSQLConnection",
@@ -77,7 +87,7 @@ db_insert_into.SparkSQLConnection =
     col_mat = matrix(unlist(cols, use.names = FALSE), nrow = nrow(values))
     rows = apply(col_mat, 1, paste0, collapse = ", ")
     values = paste0("(", rows, ")", collapse = "\n, ")
-    sql = build_sql("INSERT INTO ", ident(table), " VALUES ",
+    sql = build_sql("INSERT INTO TABLE", ident(table), " VALUES ",
                     sql(values),con = con)
     RJDBC::dbSendUpdate(con, sql)}
 
