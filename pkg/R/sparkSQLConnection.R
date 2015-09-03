@@ -69,27 +69,15 @@ setMethod(
 #modeled after db_insert_into methods in http://github.com/hadley/dplyr,
 #under MIT license
 db_insert_into.SparkSQLConnection =
-  function(con, table, values, ...) {
-    mask = sapply(values, is.factor)
-    values[mask] = lapply(values[mask], as.character)
-    mask = sapply(values, is.character)
-    values[mask] = lapply(values[mask], encodeString)
-    tmp = tempfile()
-    write.table(
-      values,
-      tmp,
-      quote = FALSE,
-      row.names = FALSE,
-      col.names = FALSE,
-      sep = "\001")
-    dbGetQuery(
-      con,
-      build_sql(
-        "LOAD DATA LOCAL INPATH ",
-        encodeString(tmp),
-        " INTO TABLE ",
-        ident(table),
-        con = con))}
+  function (con, table, values, ...) {
+    cols = lapply(values, escape, collapse = NULL, parens = FALSE,
+                  con = con)
+    col_mat = matrix(unlist(cols, use.names = FALSE), nrow = nrow(values))
+    rows = apply(col_mat, 1, paste0, collapse = ", ")
+    values = paste0("(", rows, ")", collapse = "\n, ")
+    sql = build_sql("INSERT INTO ", ident(table), " VALUES ",
+                    sql(values),con = con)
+    RJDBC::dbSendUpdate(con, sql)}
 
 db_analyze.SparkSQLConnection =
   function(con, table, ...) TRUE
