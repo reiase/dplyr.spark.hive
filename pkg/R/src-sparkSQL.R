@@ -132,7 +132,6 @@ dedot = function(x) gsub("\\.", "_", x)
 
 copy_to.src_SparkSQL =
   function(dest, df, name =  dedot(deparse(substitute(df))), ...) {
-    force(name)
     if(!name == dedot(name))
       warning("Replacing dot in table name with _ to appease spark")
     name = dedot(name)
