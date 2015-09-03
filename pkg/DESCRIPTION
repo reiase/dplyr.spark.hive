@@ -3,10 +3,12 @@ Type: Package
 Title: Scalable Data Manipulation Via Spark
 Version: 0.3.0
 Date: 2015-06-01
-Author: Revolution Analytics <rhadoop@revolutionanalytics.com>
-Maintainer: Revolution Analytics <rhadoop@revolutionanalytics.com>
+Authors@R: c(
+  person("Revolution Analytics", email = "rhadoop@revolutionanalytics.com", role = c("aut", "cre", "cph")),
+  person("Antonio", "Piccolboni", email = "antonio@piccolboni.info", role = c("aut", "cph")))
+Maintainer: Antonio Piccolboni <antonio@piccolboni.info>
 Description: Add a spark data source for dplyr.
-URL: https://github.com/RevolutionAnalytics/dplyr-spark
+URL: https://github.com/piccolbo/dplyr-spark
 License: Apache License(== 2.0)
 Imports: RJDBC, dplyr, DBI, purrr, lazyeval
 Suggests: Lahman, ggplot2, nycflights13, quickcheck
