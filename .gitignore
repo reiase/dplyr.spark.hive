@@ -3,8 +3,8 @@
 .RData
 metastore_db
 derby.log
-dplyr.spark.Rproj
+*.Rproj
 README.html
-dplyr.spark_*.tar.gz
+*.tar.gz
 *.html
-dplyr.spark.Rcheck
+*.Rcheck
