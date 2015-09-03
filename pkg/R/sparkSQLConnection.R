@@ -91,14 +91,14 @@ db_create_table.SparkSQLConnection =
     table = tolower(table)
     stopifnot(is.character(table) && length(table) == 1)
     stopifnot(is.character(types))
-    field_names <- escape(ident(names(types)), collapse = NULL,
-                          con = con)
-    fields <- dplyr:::sql_vector(paste0(field_names, " ", types), parens = TRUE,
-                         collapse = ", ", con = con)
-    sql <- build_sql("CREATE ", if (temporary)
+    field_names = escape(ident(names(types)), collapse = NULL,
+                         con = con)
+    fields = dplyr:::sql_vector(paste0(field_names, " ", types), parens = TRUE,
+                                collapse = ", ", con = con)
+    sql = build_sql("CREATE ", if (temporary)
       sql("TEMPORARY "), "TABLE ", ident(table), " ", fields,
       con = con)
-    DBI::dbSendQuery(con, sql)}
+    RJDBC::dbSendUpdate(con, sql)}
 
 db_save_query.SparkSQLConnection =
   function(con, sql, name, temporary = TRUE, ...){
