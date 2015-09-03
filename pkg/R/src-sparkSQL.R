@@ -58,7 +58,7 @@ dbConnect_retry =
           function(e) {
             Sys.sleep(0.1)
             dbConnect_retry(dr = dr, url = url, retry - 1)})
-        else dbConnect(drv = dr, url = url)}
+    else dbConnect(drv = dr, url = url)}
 
 src_SparkSQL =
   function(
@@ -82,7 +82,7 @@ src_SparkSQL =
         final.env,
         function(e) {stop.server()},
         onexit = TRUE)
-      }
+    }
     driverclass = "org.apache.hive.jdbc.HiveDriver"
     dr = JDBC(driverclass, Sys.getenv("HADOOP_JAR"))
     url = paste0("jdbc:hive2://", host, ":", port)
