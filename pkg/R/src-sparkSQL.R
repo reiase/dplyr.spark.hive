@@ -163,8 +163,7 @@ tbl.src_SparkSQL =
     tbl_sql(
       "SparkSQL",
       src = src,
-      from = if(is.sql(from)) from else tolower(from),
-      ...)}
+      from = if(is.sql(from)) from else tolower(from), ...)}
 
 # refresh = function(x, ...) UseMethod("refresh")
 #
