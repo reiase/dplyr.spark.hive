@@ -140,6 +140,24 @@ copy_to.src_SparkSQL =
     names(df) = dedot(names(df))
     dplyr:::copy_to.src_sql(dest, df, name, ...)}
 
+schema =
+  function(data)
+    stop("Schema detection not implemented yet")
+
+load_to =
+  function(dest, data, schema = schema(data), name = dedot(deparse(subset.matrix(data))), temporary = FALSE...) {
+    schema = {
+      if(is.character(schema)) schema
+      else {
+        if (is.data.frame(schema)){
+          setNames(db_data_type(dest$con, schema), colnames(schema))}
+        else stop("Don't know how to extract a schema from this")}}
+    if(!name == dedot(name))
+      warning("Replacing dot in table name with _ to appease spark")
+    name = dedot(name)
+    db_create_table(con = dest$con, table = name, types, temporary = temporary)
+    db_load_table(con = dest$con, table = name)}
+
 tbl.src_SparkSQL =
   function(src, from, ...){
     tbl_sql(

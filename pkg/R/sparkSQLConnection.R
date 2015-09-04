@@ -111,6 +111,18 @@ db_explain.SparkSQLConnection =
       con,
       build_sql("EXPLAIN ", sql))
 
+db_load_table =
+  function(con, table, url) {
+    st =
+      build_sql(
+        "LOAD DATA INPATH ",
+        encodeString(tmp),
+        " INTO TABLE ",
+        ident(table),
+        con = con)
+    RJDBC::dbSendUpdate(con = con, statement = st)
+    invisible()}
+
 sql_escape_string.SparkSQLConnection =
   function(con, x)
     sql_quote(x, "'")
