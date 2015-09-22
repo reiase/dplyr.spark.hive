@@ -51,10 +51,10 @@ explain(c4)
 db_drop_table(my_db$con, "c4")
 
 flights %>%
-filter(year == 2013, month == 1, day == 1) %>%
-select(year, month, day, carrier, dep_delay, air_time, distance)  %>%
-mutate(speed = distance / air_time * 60) %>%
-arrange(year, month, day, carrier)
+  filter(year == 2013, month == 1, day == 1) %>%
+  select(year, month, day, carrier, dep_delay, air_time, distance)  %>%
+  mutate(speed = distance / air_time * 60) %>%
+  arrange(year, month, day, carrier)
 
 
 daily = group_by(flights, year, month, day)
