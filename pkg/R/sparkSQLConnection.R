@@ -18,18 +18,25 @@ setClass(
 
 db_list_tables.SparkSQLConnection =
   function(con)
-    dbGetQuery(con, "show tables")$tableName
+    dbGetQuery(con, "show tables")[,1]
 
 db_has_table.SparkSQLConnection =
   function(con, table)
     table %in% db_list_tables(con)
 
 db_query_fields.SparkSQLConnection =
-  function(con, sql)
-    names(
-      dbGetQuery(
-        con,
-        build_sql("SELECT * FROM ", sql, " LIMIT 0", con = con)))
+  function(con, sql){
+    map(
+      strsplit(
+        x =
+          names(
+            dbGetQuery(
+              con,
+              build_sql("SELECT * FROM ", sql, " LIMIT 0", con = con))),
+        split = "\\."),
+      tail,
+      1)}
+
 
 db_explain.SparkSQLConnection = dplyr:::db_explain.MySQLConnection
 
@@ -41,6 +48,16 @@ db_commit.SparkSQLConnection =
 
 db_rollback.SparkSQLConnection =
   function(con, ...) TRUE
+
+db_drop_table.SparkSQLConnection =
+  function (con, table, force = FALSE, ...) {
+  sql =
+    build_sql(
+      "DROP TABLE ",
+      if (force) sql("IF EXISTS "),
+      ident(table),
+      con = con)
+  RJDBC::dbSendUpdate(con, sql)}
 
 setMethod(
   "dbDataType",
@@ -64,27 +81,15 @@ setMethod(
 #modeled after db_insert_into methods in http://github.com/hadley/dplyr,
 #under MIT license
 db_insert_into.SparkSQLConnection =
-  function(con, table, values, ...) {
-    mask = sapply(values, is.factor)
-    values[mask] = lapply(values[mask], as.character)
-    mask = sapply(values, is.character)
-    values[mask] = lapply(values[mask], encodeString)
-    tmp = tempfile()
-    write.table(
-      values,
-      tmp,
-      quote = FALSE,
-      row.names = FALSE,
-      col.names = FALSE,
-      sep = "\001")
-    dbGetQuery(
-      con,
-      build_sql(
-        "LOAD DATA LOCAL INPATH ",
-        encodeString(tmp),
-        " INTO TABLE ",
-        ident(table),
-        con = con))}
+  function (con, table, values, ...) {
+    cols = lapply(values, escape, collapse = NULL, parens = FALSE,
+                  con = con)
+    col_mat = matrix(unlist(cols, use.names = FALSE), nrow = nrow(values))
+    rows = apply(col_mat, 1, paste0, collapse = ", ")
+    values = paste0("(", rows, ")", collapse = "\n, ")
+    sql = build_sql("INSERT INTO TABLE", ident(table), " VALUES ",
+                    sql(values),con = con)
+    RJDBC::dbSendUpdate(con, sql)}
 
 db_analyze.SparkSQLConnection =
   function(con, table, ...) TRUE
@@ -96,7 +101,16 @@ db_create_index.SparkSQLConnection =
 db_create_table.SparkSQLConnection =
   function(con, table, types, temporary = TRUE, ...) {
     table = tolower(table)
-    dplyr:::db_create_table.DBIConnection(con, table, types, temporary, ...)}
+    stopifnot(is.character(table) && length(table) == 1)
+    stopifnot(is.character(types))
+    field_names = escape(ident(names(types)), collapse = NULL,
+                         con = con)
+    fields = dplyr:::sql_vector(paste0(field_names, " ", types), parens = TRUE,
+                                collapse = ", ", con = con)
+    sql = build_sql("CREATE ", if (temporary)
+      sql("TEMPORARY "), "TABLE ", ident(table), " ", fields,
+      con = con)
+    RJDBC::dbSendUpdate(con, sql)}
 
 db_save_query.SparkSQLConnection =
   function(con, sql, name, temporary = TRUE, ...){
