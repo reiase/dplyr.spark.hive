@@ -101,17 +101,31 @@ db_create_index.SparkSQLConnection =
     TRUE
 
 db_create_table.SparkSQLConnection =
-  function(con, table, types, temporary = TRUE, ...) {
+  function(con, table, types, temporary = TRUE, url = NULL, ...) {
+    external = !is.null(url)
     table = tolower(table)
     stopifnot(is.character(table) && length(table) == 1)
     stopifnot(is.character(types))
-    field_names = escape(ident(names(types)), collapse = NULL,
-                         con = con)
-    fields = dplyr:::sql_vector(paste0(field_names, " ", types), parens = TRUE,
-                                collapse = ", ", con = con)
-    sql = build_sql("CREATE ", if (temporary)
-      sql("TEMPORARY "), "TABLE ", ident(table), " ", fields,
-      con = con)
+    field_names =
+      escape(
+        ident(names(types)),
+        collapse = NULL,
+        con = con)
+    fields =
+      dplyr:::sql_vector(
+        paste0(field_names, " ", types),
+        parens = TRUE,
+        collapse = ", ",
+        con = con)
+    sql =
+      build_sql(
+        "CREATE ",
+        if(external) sql("EXTERNAL "),
+        if(temporary) sql("TEMPORARY "),
+        "TABLE ", ident(table), " ",
+        fields,
+        if(external) build_sql(sql(" LOCATION "), encodeString(url)),
+        con = con)
     RJDBC::dbSendUpdate(con, sql)}
 
 db_save_query.SparkSQLConnection =
