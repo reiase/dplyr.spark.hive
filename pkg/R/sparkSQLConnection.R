@@ -177,7 +177,7 @@ sql_join.SparkSQLConnection =
     x_names = auto_names(x$select)
     y_names = auto_names(y$select)
     uniques = unique_names(x_names, y_names, NULL)
-    if (is.null(uniques)) {
+    if(is.null(uniques)) {
       sel_vars = c(x_names, y_names)}
     else {
       x = update(x, select = setNames(x$select, uniques$x))
