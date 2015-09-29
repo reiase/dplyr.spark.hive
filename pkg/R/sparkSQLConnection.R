@@ -51,13 +51,13 @@ db_rollback.SparkSQLConnection =
 
 db_drop_table.SparkSQLConnection =
   function (con, table, force = FALSE, ...) {
-  sql =
-    build_sql(
-      "DROP TABLE ",
-      if (force) sql("IF EXISTS "),
-      ident(table),
-      con = con)
-  RJDBC::dbSendUpdate(con, sql)}
+    sql =
+      build_sql(
+        "DROP TABLE ",
+        if(force) sql("IF EXISTS "),
+        ident(table),
+        con = con)
+    RJDBC::dbSendUpdate(con, sql)}
 
 setMethod(
   "dbDataType",
