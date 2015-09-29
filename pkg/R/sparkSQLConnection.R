@@ -146,7 +146,7 @@ db_load_table =
     st =
       build_sql(
         "LOAD DATA INPATH ",
-        encodeString(tmp),
+        encodeString(url),
         " INTO TABLE ",
         ident(table),
         con = con)
