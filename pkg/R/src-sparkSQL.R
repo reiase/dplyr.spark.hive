@@ -147,8 +147,14 @@ schema =
     stop("Schema detection not implemented yet")
 
 load_to =
-  function(dest, data, schema = schema(data), name = dedot(deparse(subset.matrix(data))), temporary = FALSE...) {
-    schema = {
+  function(
+    dest,
+    url,
+    schema = schema(url),
+    name = dedot(basename(url)),
+    temporary = FALSE,
+    in.place = TRUE) {
+    types = {
       if(is.character(schema)) schema
       else {
         if (is.data.frame(schema)){
@@ -157,8 +163,15 @@ load_to =
     if(!name == dedot(name))
       warning("Replacing dot in table name with _ to appease spark")
     name = dedot(name)
-    db_create_table(con = dest$con, table = name, types, temporary = temporary)
-    db_load_table(con = dest$con, table = name)}
+    db_create_table(
+      con = dest$con,
+      table = name,
+      types = types,
+      temporary = temporary,
+      url = if(in.place) url)
+    if(!in.place)
+      db_load_table(con = dest$con, table = name, url)
+    tbl(dest, name)}
 
 tbl.src_SparkSQL =
   function(src, from, ...){
