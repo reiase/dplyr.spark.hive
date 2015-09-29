@@ -59,6 +59,8 @@ db_drop_table.SparkSQLConnection =
         con = con)
     RJDBC::dbSendUpdate(con, sql)}
 
+db_data_type.SparkSQLConnection = dplyr:::db_data_type.DBIConnection
+
 setMethod(
   "dbDataType",
   signature = "SparkSQLConnection",
