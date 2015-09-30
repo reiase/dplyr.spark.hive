@@ -16,6 +16,14 @@ setClass(
   "HS2Connection",
   contains = "JDBCConnection")
 
+setClass(
+  "SparkSQLConnection",
+  contains = "HS2Connection")
+
+setClass(
+  "HiveConnection",
+  contains = "HS2Connection")
+
 db_list_tables.HS2Connection =
   function(con)
     dbGetQuery(con, "show tables")[,1]

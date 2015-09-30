@@ -61,6 +61,48 @@ dbConnect_retry =
     else dbConnect(drv = dr, url = url)}
 
 src_HS2 =
+  function(host, port, class, final.env) {
+    driverclass = "org.apache.hive.jdbc.HiveDriver"
+    dr = JDBC(driverclass, Sys.getenv("HADOOP_JAR"))
+    url = paste0("jdbc:hive2://", host, ":", port)
+    con.class = paste0(class, "Connection")
+    con =
+      new(con.class, dbConnect_retry(dr, url, retry = 100))
+    pf = parent.frame()
+    src_sql(
+      c(class, "HS2"),
+      con,
+      info = list("Spark at", host = host, port = port),
+      env = final.env,
+      call = match.call(),
+      calling.env = pf)}
+
+src_SparkSQL =
+  function(
+    host =
+      first.not.empty(
+        Sys.getenv("HIVE_SERVER2_THRIFT_BIND_HOST"),
+        "localhost"),
+    port =
+      first.not.empty(
+        Sys.getenv("HIVE_SERVER2_THRIFT_PORT"),
+        10000),
+    start.server = FALSE,
+    server.opts = list()){
+    final.env = NULL
+    if(start.server) {
+      do.call(
+        "start.server",
+        server.opts)
+      final.env = new.env()
+      reg.finalizer(
+        final.env,
+        function(e) {stop.server()},
+        onexit = TRUE)}
+    src_HS2(host, port, "SparkSQL", final.env)}
+
+
+src_Hive =
   function(
     host =
       first.not.empty(
@@ -71,32 +113,8 @@ src_HS2 =
         Sys.getenv("HIVE_SERVER2_THRIFT_PORT"),
         10000),
     start.server = !is.server.running(),
-    server.opts = list(),
-    ...) {
-    final.env = NULL
-    if(start.server) {
-      do.call(
-        "start.server",
-        server.opts)
-      final.env = new.env()
-      reg.finalizer(
-        final.env,
-        function(e) {stop.server()},
-        onexit = TRUE)
-    }
-    driverclass = "org.apache.hive.jdbc.HiveDriver"
-    dr = JDBC(driverclass, Sys.getenv("HADOOP_JAR"))
-    url = paste0("jdbc:hive2://", host, ":", port)
-    con =
-      new("HS2Connection", dbConnect_retry(dr, url, retry = 100, ...))
-    pf = parent.frame()
-    src_sql(
-      "HS2",
-      con,
-      info = list("Spark at", host = host, port = port),
-      env = final.env,
-      call = match.call(),
-      calling.env = pf)}
+    server.opts = list()){
+    src_HS2(host, port, "Hive", NULL)}
 
 src_desc.src_HS2 =
   function(x) {
