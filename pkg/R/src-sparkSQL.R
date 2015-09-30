@@ -60,7 +60,7 @@ dbConnect_retry =
             dbConnect_retry(dr = dr, url = url, retry - 1, ...)})
     else dbConnect(drv = dr, url = url)}
 
-src_SparkSQL =
+src_HS2 =
   function(
     host =
       first.not.empty(
@@ -88,17 +88,17 @@ src_SparkSQL =
     dr = JDBC(driverclass, Sys.getenv("HADOOP_JAR"))
     url = paste0("jdbc:hive2://", host, ":", port)
     con =
-      new("SparkSQLConnection", dbConnect_retry(dr, url, retry = 100, ...))
+      new("HS2Connection", dbConnect_retry(dr, url, retry = 100, ...))
     pf = parent.frame()
     src_sql(
-      "SparkSQL",
+      "HS2",
       con,
       info = list("Spark at", host = host, port = port),
       env = final.env,
       call = match.call(),
       calling.env = pf)}
 
-src_desc.src_SparkSQL =
+src_desc.src_HS2 =
   function(x) {
     paste(x$info, collapse = ":")}
 
@@ -113,7 +113,7 @@ make.win.fun =
         NULL,
         frame = c(-Inf, Inf))}
 
-src_translate_env.src_SparkSQL =
+src_translate_env.src_HS2 =
   function(x)
     sql_variant(
       scalar = base_scalar,
@@ -132,7 +132,7 @@ src_translate_env.src_SparkSQL =
 
 dedot = function(x) gsub("\\.", "_", x)
 
-copy_to.src_SparkSQL =
+copy_to.src_HS2 =
   function(dest, df, name =  dedot(deparse(substitute(df))), ...) {
     if(!name == dedot(name))
       warning("Replacing dot in table name with _ to appease spark")
@@ -173,16 +173,16 @@ load_to =
       db_load_table(con = dest$con, table = name, url)
     tbl(dest, name)}
 
-tbl.src_SparkSQL =
+tbl.src_HS2 =
   function(src, from, ...){
     tbl_sql(
-      "SparkSQL",
+      "HS2",
       src = src,
       from = if(is.sql(from)) from else tolower(from), ...)}
 
 # refresh = function(x, ...) UseMethod("refresh")
 #
-# refresh.src_SparkSQL =
+# refresh.src_HS2 =
 #   function(x, ...){
 #     if(!identical(x$call$start.server, FALSE))
 #       stop.server()

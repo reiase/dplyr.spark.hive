@@ -33,7 +33,7 @@ convert.from.DB =
       stop("Don't know what to map ", type, " to"))}
 
 
-collect.tbl_SparkSQL =
+collect.tbl_HS2 =
   function(x, ...) {
     xs = compute(suppressMessages(top_n(x, 1)), temporary = FALSE)
     res = dplyr:::collect.tbl_sql(x, ...)
@@ -48,7 +48,7 @@ collect.tbl_SparkSQL =
 
 #modeled after mutate_ methods in http://github.com/hadley/dplyr,
 #under MIT license
-mutate_.tbl_SparkSQL =
+mutate_.tbl_HS2 =
   function (.data, ..., .dots) {
     dots = all_dots(.dots, ..., all_named = TRUE)
     input = partial_eval(dots, .data)
@@ -63,7 +63,7 @@ mutate_.tbl_SparkSQL =
       new}}
 
 
-filter_.tbl_SparkSQL =
+filter_.tbl_HS2 =
   function (.data, ..., .dots)   {
     dots = all_dots(.dots, ...)
     input = partial_eval(dots, .data)
@@ -81,7 +81,7 @@ assert.compatible =
 
 #modeled after union methods in http://github.com/hadley/dplyr,
 #under MIT license
-union.tbl_SparkSQL =
+union.tbl_HS2 =
   function (x, y, copy = FALSE, ...) {
     assert.compatible(x, y)
     y = dplyr:::auto_copy(x, y, copy)
@@ -90,7 +90,7 @@ union.tbl_SparkSQL =
 
 #modeled after intersect methods in http://github.com/hadley/dplyr,
 #under MIT license
-intersect.tbl_SparkSQL =
+intersect.tbl_HS2 =
   function (x, y, copy = FALSE, ...){
     assert.compatible(x, y)
     xy = inner_join(x, y, copy = copy)
@@ -106,11 +106,11 @@ some_join =
     sql = dplyr::sql_join(x$src$con, x, y, type = type, by = by)
     dplyr:::update.tbl_sql(tbl(x$src, sql), group_by = groups(x))}
 
-right_join.tbl_SparkSQL =
+right_join.tbl_HS2 =
   function (x, y, by = NULL, copy = FALSE, auto_index = FALSE, ...) {
     some_join(x = x, y = y, by = by, copy = copy, auto_index = auto_index, ..., type = "right")}
 
-full_join.tbl_SparkSQL =
+full_join.tbl_HS2 =
   function (x, y, by = NULL, copy = FALSE, auto_index = FALSE, ...) {
     some_join(x = x, y = y, by = by, copy = copy, auto_index = auto_index, ..., type = "full")}
 

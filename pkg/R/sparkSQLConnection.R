@@ -13,18 +13,18 @@
 # limitations under the License.
 
 setClass(
-  "SparkSQLConnection",
+  "HS2Connection",
   contains = "JDBCConnection")
 
-db_list_tables.SparkSQLConnection =
+db_list_tables.HS2Connection =
   function(con)
     dbGetQuery(con, "show tables")[,1]
 
-db_has_table.SparkSQLConnection =
+db_has_table.HS2Connection =
   function(con, table)
     table %in% db_list_tables(con)
 
-db_query_fields.SparkSQLConnection =
+db_query_fields.HS2Connection =
   function(con, sql){
     map(
       strsplit(
@@ -38,18 +38,18 @@ db_query_fields.SparkSQLConnection =
       1)}
 
 
-db_explain.SparkSQLConnection = dplyr:::db_explain.MySQLConnection
+db_explain.HS2Connection = dplyr:::db_explain.MySQLConnection
 
-db_begin.SparkSQLConnection =
+db_begin.HS2Connection =
   function(con, ...) TRUE
 
-db_commit.SparkSQLConnection =
+db_commit.HS2Connection =
   function(con, ...) TRUE
 
-db_rollback.SparkSQLConnection =
+db_rollback.HS2Connection =
   function(con, ...) TRUE
 
-db_drop_table.SparkSQLConnection =
+db_drop_table.HS2Connection =
   function (con, table, force = FALSE, ...) {
     sql =
       build_sql(
@@ -59,11 +59,11 @@ db_drop_table.SparkSQLConnection =
         con = con)
     RJDBC::dbSendUpdate(con, sql)}
 
-db_data_type.SparkSQLConnection = dplyr:::db_data_type.DBIConnection
+db_data_type.HS2Connection = dplyr:::db_data_type.DBIConnection
 
 setMethod(
   "dbDataType",
-  signature = "SparkSQLConnection",
+  signature = "HS2Connection",
   function(dbObj, obj, ...)
     switch(
       class(obj)[[1]],
@@ -82,7 +82,7 @@ setMethod(
 
 #modeled after db_insert_into methods in http://github.com/hadley/dplyr,
 #under MIT license
-db_insert_into.SparkSQLConnection =
+db_insert_into.HS2Connection =
   function (con, table, values, ...) {
     cols = lapply(values, escape, collapse = NULL, parens = FALSE,
                   con = con)
@@ -93,14 +93,14 @@ db_insert_into.SparkSQLConnection =
                     sql(values),con = con)
     RJDBC::dbSendUpdate(con, sql)}
 
-db_analyze.SparkSQLConnection =
+db_analyze.HS2Connection =
   function(con, table, ...) TRUE
 
-db_create_index.SparkSQLConnection =
+db_create_index.HS2Connection =
   function(con, table, columns, name = NULL, ...)
     TRUE
 
-db_create_table.SparkSQLConnection =
+db_create_table.HS2Connection =
   function(con, table, types, temporary = TRUE, url = NULL, ...) {
     external = !is.null(url)
     table = tolower(table)
@@ -128,14 +128,14 @@ db_create_table.SparkSQLConnection =
         con = con)
     RJDBC::dbSendUpdate(con, sql)}
 
-db_save_query.SparkSQLConnection =
+db_save_query.HS2Connection =
   function(con, sql, name, temporary = TRUE, ...){
     name = tolower(name)
     if(temporary)
       stop("Compute into temporary not supported yet. Set temporary = FALSE")
     dplyr:::db_save_query.DBIConnection(con, sql, name, temporary, ...)}
 
-db_explain.SparkSQLConnection =
+db_explain.HS2Connection =
   function(con, sql, ...)
     dbGetQuery(
       con,
@@ -153,17 +153,17 @@ db_load_table =
     RJDBC::dbSendUpdate(con = con, statement = st)
     invisible()}
 
-sql_escape_string.SparkSQLConnection =
+sql_escape_string.HS2Connection =
   function(con, x)
     sql_quote(x, "'")
 
-sql_escape_ident.SparkSQLConnection =
+sql_escape_ident.HS2Connection =
   function(con, x)
     sql_quote(tolower(x), "`")
 
 #modeled after sql_join methods in http://github.com/hadley/dplyr,
 #under MIT license
-sql_join.SparkSQLConnection =
+sql_join.HS2Connection =
   function (con, x, y, type = "inner", by = NULL, ...) {
     join =
       switch(
@@ -204,11 +204,11 @@ sql_join.SparkSQLConnection =
     attr(from, "vars") = lapply(sel_vars, as.name)
     from}
 
-environment(sql_join.SparkSQLConnection) = environment(select_)
+environment(sql_join.HS2Connection) = environment(select_)
 
 #modeled after sql_semi_join methods in http://github.com/hadley/dplyr,
 #under MIT license
-sql_semi_join.SparkSQLConnection =
+sql_semi_join.HS2Connection =
   function (con, x, y, anti = FALSE, by = NULL, ...){
     if(anti) stop("antijoins not implemented yet")
     by = dplyr:::common_by(by, x, y)
