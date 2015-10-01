@@ -194,7 +194,7 @@ load_to =
 tbl.src_HS2 =
   function(src, from, ...){
     tbl_sql(
-      "HS2",
+      map(strsplit(class(src)[1:2], "_"), 2),
       src = src,
       from = if(is.sql(from)) from else tolower(from), ...)}
 
