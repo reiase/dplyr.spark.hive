@@ -53,7 +53,7 @@ mutate_.tbl_HS2 =
     dots = all_dots(.dots, ..., all_named = TRUE)
     input = partial_eval_mod(dots, .data)
     for(i in 1:length(input))
-      input = lapply(input, function(x) partial_eval_mod(x, .data, input))
+      input = partial_eval_mod(input, .data, input)
     .data$mutate = TRUE
     no.dup.select = .data$select[!as.character(.data$select) %in% names(input)]
     new = update(.data, select = c(no.dup.select, input))
