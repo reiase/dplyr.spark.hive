@@ -34,17 +34,20 @@ db_has_table.HS2Connection =
 
 db_query_fields.HS2Connection =
   function(con, sql){
+    names(
+      dbGetQuery(
+        con,
+        build_sql("SELECT * FROM ", sql, " LIMIT 0", con = con)))}
+
+db_query_fields.HiveConnection =
+  function(con, sql){
     map(
       strsplit(
         x =
-          names(
-            dbGetQuery(
-              con,
-              build_sql("SELECT * FROM ", sql, " LIMIT 0", con = con))),
+          db_query_fields.HS2Connection(con, sql),
         split = "\\."),
-      tail,
-      1)}
-
+      head,
+      -1)}
 
 db_explain.HS2Connection = dplyr:::db_explain.MySQLConnection
 
