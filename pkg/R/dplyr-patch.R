@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # both following function taken from dplyr with minor changes
-# to compensate for unsupport SQL variations
+# to compensate for unsupported SQL variations
 #
 over  =
   function (expr, partition = NULL, order = NULL, frame = NULL)  {
@@ -43,7 +43,6 @@ environment(over) = environment(select_)
 partial_eval_mod =
   function (call, tbl = NULL, env = parent.frame())
   {
-    message("in modded version")
     if (is.atomic(call))
       return(call)
     if (inherits(call, "lazy_dots")) {
