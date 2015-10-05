@@ -24,8 +24,21 @@ library(nycflights13)
 flights = {
   if(db_has_table(my_db$con, "flights"))
     tbl(my_db, "flights")
-  else
-    copy_to(my_db, flights, temporary = FALSE)}
+  else{
+    tmpdir = tempfile()
+    dir.create(tmpdir)
+    tmpfile = tempfile(tmpdir = tmpdir)
+    write.table(
+      flights,
+      file = tmpfile,
+      sep = "\001",
+      col.names = FALSE,
+      row.names = FALSE)
+    load_to(
+      dest = my_db,
+      url = tmpdir,
+      schema = flights,
+      name = "flights")}}
 flights
 cache(flights)
 

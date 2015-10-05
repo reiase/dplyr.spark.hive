@@ -24,8 +24,12 @@ my_db = src_SparkSQL()
 library(Lahman)
 {if(db_has_table(my_db$con, "batting"))
   batting = tbl(my_db, "batting")
-else
-  batting = copy_to(my_db, Batting)}
+else {
+  tmpdir = tempfile()
+  dir.create(tmpdir)
+  tmp = tempfile(tmpdir = tmpdir)
+  write.table(Batting, file = tmp, sep = "\001", col.names = FALSE, row.names = FALSE)
+  batting = load_to(dest = my_db, url = tmpdir, schema = Batting, name = "batting", in.place = TRUE)}}
 batting <- select(batting, playerid, yearid, teamid, g, ab:h)
 batting <- arrange(batting, playerid, yearid, teamid)
 players <- group_by(batting, playerid)
@@ -45,3 +49,4 @@ mutate(players, g_change = (g - lag(g)) / (yearid - lag(yearid)))
 filter(players, g > mean(g))
 # For each, player compute a z score based on number of games played
 mutate(players, g_z = (g - mean(g)) / sd(g))
+

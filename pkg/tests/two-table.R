@@ -29,7 +29,15 @@ ls("package:nycflights13") %>%
 
 ls("package:nycflights13") %>%
   discard(db_has_table(my_db$con,.)) %>%
-  map(~assign(., copy_to(my_db, get(.), .), envir = .GlobalEnv))
+  map(
+    ~assign(
+      ., {
+        tmpdir = tempfile()
+        dir.create(tmpdir)
+        tmpfile = tempfile(tmpdir = tmpdir)
+        write.table(get(.), file = tmpfile, sep = "\001", col.names = FALSE, row.names = FALSE)
+        load_to(my_db, url = tmpdir, schema = get(.), name = ., in.place = TRUE)},
+      envir = .GlobalEnv))
 
 
 #first time around
@@ -67,8 +75,14 @@ left_join(flights2, airports, c("origin" = "faa"))
 (df2 = data_frame(x = c(1, 3), a = 10, b = "a"))
 
 {if(!db_has_table(my_db$con, "df1")) {
-  df1 = copy_to(my_db, df1, temporary = TRUE)
-  df2 = copy_to(my_db, df2, temporary = TRUE)}
+  tmpdir = tempfile()
+  dir.create(tmpdir)
+  tmp = tempfile(tmpdir = tmpdir)
+  write.table(df1, file = tmp, sep = "\001", col.names = FALSE, row.names = FALSE)
+  df1 = load_to(my_db, tmpdir, df1, name = "df1", in.place = TRUE)
+  tmp = tempfile(tmpdir = tmpdir)
+  write.table(df2, file = tmp, sep = "\001", col.names = FALSE, row.names = FALSE)
+  df2 = load_to(my_db, tmpdir, df2, name = "df2", in.place = TRUE)}
 else{
   df1 = tbl(my_db, "df1")
   df2 = tbl(my_db, "df2")}}
