@@ -122,11 +122,11 @@ src_desc.src_HS2 =
 
 make.win.fun =
   function(f)
-    function(x) {
+    function(...) {
       dplyr:::over(
         dplyr::build_sql(
           dplyr::sql(f),
-          list(x)),
+          list(...)),
         dplyr:::partition_group(),
         NULL,
         frame = c(-Inf, Inf))}
