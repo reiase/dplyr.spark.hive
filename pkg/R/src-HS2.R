@@ -139,7 +139,7 @@ src_translate_env.src_HS2 =
         sql_translator(
           .parent = base_agg,
           n = function() sql("COUNT(*)"),
-          sd =  sql_prefix("STDDEV_POP"),
+          sd =  sql_prefix("STDDEV_SAMP"),
           var = sql_prefix("VAR_SAMP")),
       window =
         sql_translator(
