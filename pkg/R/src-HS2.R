@@ -151,7 +151,7 @@ src_translate_env.src_HS2 =
 
 dedot = function(x) gsub("\\.", "_", x)
 
-copy_to.src_HS2 =
+copy_to.src_Hive =
   function(dest, df, name =  dedot(deparse(substitute(df))), ...) {
     if(!name == dedot(name))
       warning("Replacing dot in table name with _ to appease spark")
@@ -160,6 +160,10 @@ copy_to.src_HS2 =
       warning("Replacing dot with _ in col names to appease spark")
     names(df) = dedot(names(df))
     dplyr:::copy_to.src_sql(dest, df, name, ...)}
+
+copy_to.src_SparkSQL =
+  function(dest, df, name, ...)
+    stop("copy not implemented for SparkSQL, use load_to instead")
 
 schema =
   function(data)
