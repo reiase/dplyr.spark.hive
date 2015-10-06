@@ -168,10 +168,20 @@ load_to =
   function(
     dest,
     url,
-    schema = schema(url),
     name = dedot(basename(url)),
+    schema = schema(url),
     temporary = FALSE,
-    in.place = TRUE) {
+    in.place = TRUE, ...)  UseMethod("load_to")
+
+load_to.src_HS2 =
+  function(
+    dest,
+    url,
+    schema,
+    name,
+    temporary,
+    in.place,
+    ...) {
     types = {
       if(is.character(schema)) schema
       else {
