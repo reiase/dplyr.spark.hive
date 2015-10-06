@@ -32,7 +32,7 @@ ls("package:nycflights13") %>%
   map(
     ~assign(
       ., {
-        tmpdir = tempfile()
+        tmpdir = tempfile(tmpdir = "/tmp")
         dir.create(tmpdir)
         tmpfile = tempfile(tmpdir = tmpdir)
         write.table(get(.), file = tmpfile, sep = "\001", col.names = FALSE, row.names = FALSE)
@@ -75,7 +75,7 @@ left_join(flights2, airports, c("origin" = "faa"))
 (df2 = data_frame(x = c(1, 3), a = 10, b = "a"))
 
 {if(!db_has_table(my_db$con, "df1")) {
-  tmpdir = tempfile()
+  tmpdir = tempfile(tmpdir = "/tmp")
   dir.create(tmpdir)
   tmp = tempfile(tmpdir = tmpdir)
   write.table(df1, file = tmp, sep = "\001", col.names = FALSE, row.names = FALSE)

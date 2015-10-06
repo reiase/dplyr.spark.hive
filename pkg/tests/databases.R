@@ -25,7 +25,7 @@ flights = {
   if(db_has_table(my_db$con, "flights"))
     tbl(my_db, "flights")
   else{
-    tmpdir = tempfile()
+    tmpdir = tempfile(tmpdir = "/tmp")
     dir.create(tmpdir)
     tmpfile = tempfile(tmpdir = tmpdir)
     write.table(

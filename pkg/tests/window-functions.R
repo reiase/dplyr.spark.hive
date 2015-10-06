@@ -25,7 +25,7 @@ library(Lahman)
 {if(db_has_table(my_db$con, "batting"))
   batting = tbl(my_db, "batting")
 else {
-  tmpdir = tempfile()
+  tmpdir = tempfile(tmpdir = "/tmp")
   dir.create(tmpdir)
   tmp = tempfile(tmpdir = tmpdir)
   write.table(Batting, file = tmp, sep = "\001", col.names = FALSE, row.names = FALSE)
