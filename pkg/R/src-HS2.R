@@ -208,6 +208,15 @@ tbl.src_HS2 =
       src = src,
       from = if(is.sql(from)) from else tolower(from), ...)}
 
+tbls = function(src, ...) UseMethod("tbls")
+
+tbls.src_HS2 =
+  function(src, ...){
+    frame = parent.frame()
+    tblnames = db_list_tables(src$con)
+    tblnames = keep(tblnames, ~db_has_table(my_db$con,.))
+  invisible(map(tblnames, ~assign(., tbl(my_db, .), envir = frame)))}
+
 # refresh = function(x, ...) UseMethod("refresh")
 #
 # refresh.src_HS2 =
