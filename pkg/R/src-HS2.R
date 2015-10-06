@@ -146,7 +146,8 @@ src_translate_env.src_HS2 =
           .parent = base_win,
           n = function() sql("COUNT(*)"),
           sd =  make.win.fun("STDDEV_SAMP"),
-          var = make.win.fun("VAR_SAMP")))
+          var = make.win.fun("VAR_SAMP"),
+          quantile = make.win.fun("PERCENTILE_APPROX")))
 
 dedot = function(x) gsub("\\.", "_", x)
 
