@@ -62,10 +62,12 @@ mutate_.tbl_HS2 =
     else {
       new}}
 
-
+#modeled after filter_ methods in http://github.com/hadley/dplyr,
+#under MIT license
 filter_.tbl_HS2 =
   function (.data, ..., .dots)   {
     dots = all_dots(.dots, ...)
+    lapply(seq_along(dots), function(i) dots[[i]]$expr <<- call("(", dots[[i]]$expr))
     input = partial_eval(dots, .data)
     if(
       any(
