@@ -60,6 +60,7 @@ db_commit.HS2Connection =
 db_rollback.HS2Connection =
   function(con, ...) TRUE
 
+# neede to use dbSendUpdate here,  no getQuery or sendQuery allowed
 db_drop_table.HS2Connection =
   function (con, table, force = FALSE, ...) {
     sql =
@@ -70,6 +71,7 @@ db_drop_table.HS2Connection =
         con = con)
     RJDBC::dbSendUpdate(con, sql)}
 
+#not sure why this is neededn
 db_data_type.HS2Connection = dplyr:::db_data_type.DBIConnection
 
 setMethod(
@@ -111,6 +113,7 @@ db_create_index.HS2Connection =
   function(con, table, columns, name = NULL, ...)
     TRUE
 
+# this is only to replace getquery with sendupdate and to lowercase names
 db_create_table.HS2Connection =
   function(con, table, types, temporary = TRUE, url = NULL, ...) {
     external = !is.null(url)
@@ -152,6 +155,7 @@ db_explain.HS2Connection =
       con,
       build_sql("EXPLAIN ", sql))
 
+# this is for the sendupdate and INPATH vs INFILE syntax
 db_load_table =
   function(con, table, url) {
     st =
@@ -174,6 +178,7 @@ sql_escape_ident.HS2Connection =
 
 #modeled after sql_join methods in http://github.com/hadley/dplyr,
 #under MIT license
+#this is needed because the ON syntax is mandatory in HS2
 sql_join.HS2Connection =
   function (con, x, y, type = "inner", by = NULL, ...) {
     join =

@@ -14,7 +14,7 @@
 
 # both following function taken from dplyr with minor changes
 # to compensate for unsupported SQL variations
-#
+# this is a matter of parens if I can remember
 over  =
   function (expr, partition = NULL, order = NULL, frame = NULL)  {
     args = (!is.null(partition)) + (!is.null(order)) + (!is.null(frame))
@@ -40,6 +40,8 @@ over  =
 
 environment(over) = environment(select_)
 
+#support [] as a db feature
+#remove undocumented remote (it's default anyway)
 partial_eval_mod =
   function (call, tbl = NULL, env = parent.frame())
   {
@@ -82,6 +84,7 @@ partial_eval_mod =
     }
   }
 
+#add support for brackets
 default_op_mod =
   function (x)
   {
@@ -130,10 +133,4 @@ environment(default_op_mod) = environment(select_)
     x = "default_op",
     ns = "dplyr",
     value = default_op_mod)
-  # doesn't seem necessary anymore
-  #  assignInNamespace(
-  #     "unique_name",
-  #     function()
-  #       paste0("tmp", strsplit(as.character(runif(1)), "\\.")[[1]][2]),
-  #     ns = "dplyr")
 }

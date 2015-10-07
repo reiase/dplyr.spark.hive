@@ -161,6 +161,7 @@ copy_to.src_Hive =
     names(df) = dedot(names(df))
     dplyr:::copy_to.src_sql(dest, df, name, ...)}
 
+# VALUES not support, client-local file not supported
 copy_to.src_SparkSQL =
   function(dest, df, name, ...)
     stop("copy not implemented for SparkSQL, use load_to instead")
@@ -206,6 +207,7 @@ load_to.src_HS2 =
       db_load_table(con = dest$con, table = name, url)
     tbl(dest, name)}
 
+#support inheritance
 tbl.src_HS2 =
   function(src, from, ...){
     tbl_sql(

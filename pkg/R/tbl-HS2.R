@@ -32,7 +32,8 @@ convert.from.DB =
       char = as.character,
       stop("Don't know what to map ", type, " to"))}
 
-
+# this uses  a compute then fetch approach to be able to query the result schema
+# and do type conversions, it's a work around for some type blunder in fetch
 collect.tbl_HS2 =
   function(x, ...) {
     xs = compute(suppressMessages(top_n(x, 1)), temporary = FALSE)
@@ -48,6 +49,10 @@ collect.tbl_HS2 =
 
 #modeled after mutate_ methods in http://github.com/hadley/dplyr,
 #under MIT license
+# this does multiple partial_evals to allow new cols to be used to define new cols
+# not supported directly in HS2
+# then avoids duplicate col names to avoid the wrong selection in transmute
+# finally adds a collapse when win funs are present
 mutate_.tbl_HS2 =
   function (.data, ..., .dots) {
     dots = all_dots(.dots, ..., all_named = TRUE)
@@ -64,6 +69,8 @@ mutate_.tbl_HS2 =
 
 #modeled after filter_ methods in http://github.com/hadley/dplyr,
 #under MIT license
+# This adds parens to clarify priority in cascaded filters
+# adds collapse when new cols used in filter
 filter_.tbl_HS2 =
   function (.data, ..., .dots)   {
     dots = all_dots(.dots, ...)
@@ -83,6 +90,7 @@ assert.compatible =
 
 #modeled after union methods in http://github.com/hadley/dplyr,
 #under MIT license
+# HS2 uses UNION ALL
 union.tbl_HS2 =
   function (x, y, copy = FALSE, ...) {
     assert.compatible(x, y)
@@ -92,6 +100,7 @@ union.tbl_HS2 =
 
 #modeled after intersect methods in http://github.com/hadley/dplyr,
 #under MIT license
+# intersect simulated with an inner_join and select for lack of native support
 intersect.tbl_HS2 =
   function (x, y, copy = FALSE, ...){
     assert.compatible(x, y)
@@ -100,6 +109,7 @@ intersect.tbl_HS2 =
 
 #modeled after join methods in http://github.com/hadley/dplyr,
 #under MIT license
+# this looks like it's converged back to the dplyr original
 some_join =
   function (x, y, by = NULL, copy = FALSE, auto_index = FALSE, ..., type) {
     by = dplyr:::common_by(by, x, y)
@@ -108,10 +118,12 @@ some_join =
     sql = dplyr::sql_join(x$src$con, x, y, type = type, by = by)
     dplyr:::update.tbl_sql(tbl(x$src, sql), group_by = groups(x))}
 
+# missing dplyr feature
 right_join.tbl_HS2 =
   function (x, y, by = NULL, copy = FALSE, auto_index = FALSE, ...) {
     some_join(x = x, y = y, by = by, copy = copy, auto_index = auto_index, ..., type = "right")}
 
+#missing dplyr feature
 full_join.tbl_HS2 =
   function (x, y, by = NULL, copy = FALSE, auto_index = FALSE, ...) {
     some_join(x = x, y = y, by = by, copy = copy, auto_index = auto_index, ..., type = "full")}
