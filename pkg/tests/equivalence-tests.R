@@ -13,7 +13,7 @@
 # limitations under the License.
 
 library(dplyr)
-library(dplyr.spark)
+library(dplyr.spark.hive)
 library(quickcheck)
 
 my_db = src_SparkSQL()

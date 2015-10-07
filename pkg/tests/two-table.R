@@ -16,7 +16,7 @@
 # presumably under MIT licenselibrary(dplyr)
 
 library(dplyr)
-library(dplyr.spark)
+library(dplyr.spark.hive)
 library(purrr)
 
 my_db = src_SparkSQL()

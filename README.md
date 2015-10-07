@@ -1,9 +1,10 @@
 
 
 
-# dplyr.spark
+# dplyr.spark.hive
 
-This package implements a [`spark`](http://spark.apache.org/) backend for the [`dplyr`](http://github.com/hadley/dplyr) package, providing a powerful and intuitive DSL to manipulate large datasets on a powerful big data platform.  It is a simple package: simple to learn if you have any familiarity with `dplyr` or even just R and SQL, simple to deploy: just a few packages to install on a single machine, as long as your Spark installation comes with JDBC support -- or build it in, instructions below.
+This package implements [`spark`](http://spark.apache.org/) and [`hive`](http://hive.apache.org) backends for the [`dplyr`](http://github.com/hadley/dplyr) package, providing a powerful and intuitive DSL to manipulate large datasets on two powerful big data platforms. It is a simple package: simple to learn if you have any familiarity with `dplyr` or even just R and SQL, simple to deploy: just a few packages to install on a single machine, as long as your Spark or Hive installations comes with JDBC support.
+
 The current state of the project is:
 
  - most `dplyr` features supported
@@ -14,6 +15,8 @@ The current state of the project is:
 
 ## Installation
 
+### For spark
+
 You need to [download spark](https://spark.apache.org/downloads.html) and [build it](https://spark.apache.org/docs/latest/building-spark.html) as follows
 
 ```
@@ -23,7 +26,7 @@ build/mvn -Pyarn -Phadoop-2.4 -Dhadoop.version=2.4.0 -DskipTests -Phive -Phive-t
 
 It may work with other hadoop versions, but we need the hive and hive-thriftserver support. The package is able to start the thirft server but can also connect to a running one.
 
-`dplyr.spark` has a few dependencies: get them with
+`dplyr.spark.hive` has a few dependencies: get them with
 
 ```
 install.packages(c("RJDBC", "dplyr", "DBI", "devtools"))
@@ -38,7 +41,7 @@ library(rJava)
 .jinit()
 ```
 
-This is only a test, in general you don't need it before loading `dplyr.spark`.
+This is only a test, in general you don't need it before loading `dplyr.spark.hive`.
 
 ----------------
 
@@ -66,7 +69,7 @@ Then, to install from source:
 
 
 ```
-devtools::install_github("RevolutionAnalytics/dplyr-spark@0.3.0", subdir = "pkg")
+devtools::install_github("piccolbo/dplyr.spark.hiveNOT AVAILABLE", subdir = "pkg")
 ```
 
 Linux package:
@@ -74,25 +77,12 @@ Linux package:
 
 ```
 devtools::install_url(
-  "https://github.com/RevolutionAnalytics/dplyr-spark/releases/download/0.3.0/dplyr.spark_0.3.0.tar.gz")
+  "https://github.com/piccolbo/dplyr.spark.hive/releases/download/NOT AVAILABLE/dplyr.spark.hive_NOT AVAILABLE.tar.gz")
 ```
 
-<!-- 
-A windows package will be added in the near future.
+The current version is NOT AVAILABLE .
 
-Windows package:
+You can find a number of examples derived from @hadley's own tutorials for dplyr look under the [test](https://github.com/piccolbo/dplyr.spark.hive/tree/master/pkg/tests) directory, files `databases.R`, `window-functions.R` and `two-table.R`.
 
-
-```
-install_url(
-  "https://github.com/RevolutionAnalytics/dplyr-spark/releases/download/0.3.0/dplyr.spark_0.3.0.zip")
-```
-
--->
-
-The current version is 0.3.0 .
-
-You can find a number of examples derived from @hadley's own tutorials for dplyr look under the [test](https://github.com/RevolutionAnalytics/dplyr-spark/tree/master/pkg/tests) directory, files `databases.R`, `window-functions.R` and `two-table.R`.
-
-For new releases, subscribe to `dplyr-spark`'s Release notes [feed](https://github.com/RevolutionAnalytics/dplyr.spark/releases.atom) or join the [RHadoop Google group](https://groups.google.com/forum/#!forum/rhadoop). The latter is also the best place to get support, together with the [issue tracker](http://github.com/RevolutionAnalytics/dplyr.spark/issues))
+For new releases, subscribe to `dplyr.spark.hive`'s Release notes [feed](https://github.com/piccolbo/dplyr.spark.hive/releases.atom) or join the [RHadoop Google group](https://groups.google.com/forum/#!forum/rhadoop). The latter is also the best place to get support, together with the [issue tracker](http://github.com/piccolbo/dplyr.spark.hive/issues))
 
