@@ -39,7 +39,7 @@ Whether to move the data to the database own storage or access it in place}
 Unused, necessary to appease the R gods}
 }
 \details{
-Currently, it can only use the default format which is \code{\001}-separated CSV.
+Currently, it can only use the default format which is \code{\001}-separated CSV, no headers, no rownames, no quotes. Format support is on the roadmap. The method for class \code{src_HS2} works for both \code{src_SparkSQL} and \code{src_Hive}. It's a case of documentation-induced implementation detail leakage. The default method just fails with an error message, as \code{load_to} is an API extension specfic to this package and not present in \code{dplyr}.
 }
 \value{
 A tbl for the newly created table}
