@@ -111,9 +111,7 @@ src_Hive =
     port =
       first.not.empty(
         Sys.getenv("HIVE_SERVER2_THRIFT_PORT"),
-        10000),
-    start.server = !is.server.running(),
-    server.opts = list()){
+        10000)){
     src_HS2(host, port, "Hive", NULL)}
 
 src_desc.src_HS2 =
