@@ -169,22 +169,17 @@ schema =
     stop("Schema detection not implemented yet")
 
 load_to =
+  function( dest, url, name, schema, temporary, in.place, ...)
+    UseMethod("load_to")
+
+load_to.src_HS2 =
   function(
     dest,
     url,
     name = dedot(basename(url)),
     schema = schema(url),
     temporary = FALSE,
-    in.place = TRUE, ...)  UseMethod("load_to")
-
-load_to.src_HS2 =
-  function(
-    dest,
-    url,
-    name,
-    schema,
-    temporary,
-    in.place,
+    in.place = TRUE,
     ...) {
     types = {
       if(is.character(schema)) schema
