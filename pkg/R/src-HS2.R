@@ -219,12 +219,14 @@ tbl.src_HS2 =
 
 tbls = function(src, ...) UseMethod("tbls")
 
-tbls.src_HS2 =
+tbls.src_sql =
   function(src, ...){
     frame = parent.frame()
     tblnames = db_list_tables(src$con)
     tblnames = keep(tblnames, ~db_has_table(my_db$con,.))
   invisible(map(tblnames, ~assign(., tbl(my_db, .), envir = frame)))}
+
+tbls.default = function(src, ...) stop("Not implemented for non-sql srcs")
 
 # refresh = function(x, ...) UseMethod("refresh")
 #
