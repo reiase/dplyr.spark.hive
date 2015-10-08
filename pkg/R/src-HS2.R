@@ -205,6 +205,10 @@ load_to.src_HS2 =
       db_load_table(con = dest$con, table = name, url)
     tbl(dest, name)}
 
+load_to.default =
+  function(dest, url, name, schema, temporary, in.place, ...){
+    stop("Not implemented yet")}
+
 #support inheritance
 tbl.src_HS2 =
   function(src, from, ...){
