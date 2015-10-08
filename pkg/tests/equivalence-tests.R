@@ -139,6 +139,14 @@ cmp =
     y = normalize(y)
     isTRUE(all.equal(x, y))}
 
+copy_to =
+  function(src, x, name) {
+    tmpdir = tempfile()
+    dir.create(tmpdir)
+    tmpfile = tempfile(tmpdir = tmpdir)
+    write.table(x, file = tmpfile, sep = "\001", col.names = FALSE, row.names = FALSE, quote = FALSE)
+    load_to(my_db, url = tmpdir, schema = x, name = name, in.place = TRUE)}
+
 equiv.test =
   function(expr.gen, dfgen = rsupported.data.frame, src = src){
     test(
