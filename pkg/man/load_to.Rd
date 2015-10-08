@@ -7,7 +7,16 @@ Create a table from a stored dataset.
 Create a table from a stored datasets identified by a URL.
 }
 \usage{
-load_to(dest, url, name = dedot(basename(url)), schema = schema(url), temporary = FALSE, in.place = TRUE, ...)
+load_to(dest, url, name, schema, temporary, in.place, ...)
+\method{load_to}{src_HS2}(
+    dest,
+    url,
+    name = dedot(basename(url)),
+    schema = schema(url),
+    temporary = FALSE,
+    in.place = TRUE,
+    ...)
+\method{load_to}{default}(dest, url, name, schema, temporary, in.place, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
