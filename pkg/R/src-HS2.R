@@ -181,8 +181,8 @@ load_to.src_HS2 =
   function(
     dest,
     url,
-    schema,
     name,
+    schema,
     temporary,
     in.place,
     ...) {
