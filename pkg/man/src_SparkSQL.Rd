@@ -1,6 +1,6 @@
 \name{src_SparkSQL}
 \alias{src_SparkSQL}
-\alist{src_Hive}
+\alias{src_Hive}
 
 \title{
 Create a dplyr src backed by SparkSQL or Hive
