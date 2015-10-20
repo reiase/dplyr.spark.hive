@@ -9,28 +9,27 @@ The current state of the project is:
 
  - most `dplyr` features supported
  - adds some `spark`-specific goodies, like *caching* tables.
- - can go succesfully through tutorials for `dplyr` like any other database backend^[with the exception of one bug to avoid which you need to run Spark from trunk or wait for version 1.5, see [SPARK-9221](https://issues.apache.org/jira/browse/SPARK-9921)]. 
+ - can go succesfully through tutorials for `dplyr` like any other database backend. 
  - not yet endowed with a thorugh test suite. Nonetheless we expect it to inherit much of its correctness, scalability and robustness from its main dependencies, `dplyr` and `spark`.
  - we don't recommend production use yet
 
 ## Installation
 
-### For spark
-
-You need to [download spark](https://spark.apache.org/downloads.html) and [build it](https://spark.apache.org/docs/latest/building-spark.html) as follows
+For Spark, [download](https://spark.apache.org/downloads.html) and [build it](https://spark.apache.org/docs/latest/building-spark.html) as follows
 
 ```
 cd <spark root>
-build/mvn -Pyarn -Phadoop-2.4 -Dhadoop.version=2.4.0 -DskipTests -Phive -Phive-thriftserver clean package
+build/mvn -Pyarn -Phadoop-2.6 -Dhadoop.version=2.6.0 -DskipTests -Phive -Phive-thriftserver clean package
 ```
 
-It may work with other hadoop versions, but we need the hive and hive-thriftserver support. The package is able to start the thirft server but can also connect to a running one.
+It may work with other hadoop versions, but we need the hive and hive-thriftserver support. Spark 1.5 and later is highly recommended because of bugs that affect this package. The package is able to start the thrift server but can also connect to a running one.
+
+For Hive, any recent Hadoop distribution should do. We did some testing with the latest HDP as provided in the Hortonworks sandbox.
 
 `dplyr.spark.hive` has a few dependencies: get them with
 
 ```
-install.packages(c("RJDBC", "dplyr", "DBI", "devtools"))
-devtools::install_github("hadley/purrr")
+install.packages(c("RJDBC", "dplyr", "DBI", "devtools", "purrr", "lazyeval"))
 ```
 
 Indirectly `RJDBC` needs `rJava`. Make sure that you have `rJava` working with:
@@ -56,12 +55,14 @@ The specific path may be different, particularly the version numbers. To start R
 ```
 DYLD_FALLBACK_LIBRARY_PATH=/Library/Java/JavaVirtualMachines/jdk1.8.0_51.jdk/Contents/Home/jre/lib/server/ open -a rstudio
 ```
+
 ----------------
 
-The `HADOOP_JAR` environment variable needs to be set to the main hadoop JAR file, something like `"<spark home>/assembly/target/scala-2.10/spark-assembly-1.4.1-SNAPSHOT-hadoop2.4.0.jar"` 
 
-To start the thrift server from R, which happens by default when creating a `src_SparkSQL` object, you need one more variable set, `SPARK_HOME`, as the name suggests pointing to the root of the Spark installation. If you are connecting with a running server, you just need host and port information. Those can be stored in environment variable as well, see help documentation.
 
+The `HADOOP_JAR` environment variable needs to be set to the main hadoop JAR file, something like `"<spark home>/assembly/target/scala-2.10/spark-assembly-*-hadoop*.jar"`. The packaging of Spark is under review (SPARK-11157) so expect changes here. We then may be able to bundle the necessary jars with this package, at least for the most recent versions, thus removing the need to install spark on client machines. For hive users, the path will be a little different but the principle is the same. This is needed for the instantiation of  a JDBC driver, which needs to be able to find class `org.apache.hive.jdbc.HiveDriver` fot both Spark and Hive, which share some of these components.
+
+To start the thrift server from R, you need one more variable set, `SPARK_HOME`, as the name suggests pointing to the root of the Spark installation. If you are connecting with a running server, you just need host and port information. Those can be stored in environment variable as well, see help documentation. The option to start a server from R is not available for Hive.
 
 
 
@@ -69,9 +70,11 @@ Then, to install from source:
 
 
 ```
-devtools::install_github("piccolbo/dplyr.spark.hiveNOT AVAILABLE", subdir = "pkg")
+devtools::install_github("piccolbo/dplyr.spark.hive", subdir = "pkg")
 ```
 
+We are still figuring out the details of how to conduct formal releases, whatever that means. Stay tuned.
+<!--
 Linux package:
 
 
@@ -81,8 +84,13 @@ devtools::install_url(
 ```
 
 The current version is NOT AVAILABLE .
+-->
 
-You can find a number of examples derived from @hadley's own tutorials for dplyr look under the [test](https://github.com/piccolbo/dplyr.spark.hive/tree/master/pkg/tests) directory, files `databases.R`, `window-functions.R` and `two-table.R`.
+You can find a number of examples derived from @hadley's own tutorials for dplyr looking under the [tests](https://github.com/piccolbo/dplyr.spark.hive/tree/master/pkg/tests) directory, files `databases.R`, `window-functions.R` and `two-table.R`.
 
-For new releases, subscribe to `dplyr.spark.hive`'s Release notes [feed](https://github.com/piccolbo/dplyr.spark.hive/releases.atom) or join the [RHadoop Google group](https://groups.google.com/forum/#!forum/rhadoop). The latter is also the best place to get support, together with the [issue tracker](http://github.com/piccolbo/dplyr.spark.hive/issues))
+
+<!-- For new releases, subscribe to `dplyr.spark.hive`'s Release notes [feed](https://github.com/piccolbo/dplyr.spark.hive/releases.atom). The latter is also the best place to get support, together with the  -->
+
+If you notice any problems, please create an item in the [issue tracker](http://github.com/piccolbo/dplyr.spark.hive/issues).
+
 

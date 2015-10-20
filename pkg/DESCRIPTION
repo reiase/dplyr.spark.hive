@@ -5,7 +5,7 @@ Version: 0.4.0
 Date: 2015-11-01
 Authors@R: c(
   person("Revolution Analytics", email = "rhadoop@revolutionanalytics.com", role = c("aut", "cre", "cph")),
-  person("Antonio", "Piccolboni", email = "antonio@piccolboni.info", role = c("aut", "cph")))
+  person("Per Data LLC", email = "antonio@piccolboni.info", role = c("aut", "cph")))
 Maintainer: Antonio Piccolboni <antonio@piccolboni.info>
 Description: Add spark and hive data sources for dplyr.
 URL: https://github.com/piccolbo/dplyr.spark.hive
