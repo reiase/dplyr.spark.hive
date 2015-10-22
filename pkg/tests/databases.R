@@ -43,7 +43,7 @@ select(flights, year:day, dep_delay, arr_delay)
 filter(flights, dep_delay > 240)
 arrange(flights, year, month, day)
 mutate(flights, speed = air_time / distance)
-summarise(flights, delay = mean(dep_delay))
+summarize(flights, delay = mean(dep_delay))
 
 c1 = filter(flights, year == 2013, month == 1, day == 1)
 c2 = select(c1, year, month, day, carrier, dep_delay, air_time, distance)
@@ -67,7 +67,7 @@ flights %>%
 
 daily = group_by(flights, year, month, day)
 
-summarise(daily, arr_delay = mean(arr_delay))
+summarize(daily, arr_delay = mean(arr_delay))
 
 bestworst =
   daily %>%
@@ -135,7 +135,7 @@ transmute(
 
 by_tailnum = group_by(flights, tailnum)
 delay =
-  summarise(
+  summarize(
     by_tailnum,
     count = n(),
     dist = mean(distance),
@@ -152,19 +152,19 @@ ggplot(
   scale_size_area()
 
 destinations = group_by(flights, dest)
-summarise(
+summarize(
   destinations,
   planes = n_distinct(tailnum),
   flights = n())
 
-(per_day   = summarise(daily, flights = n()))
-(per_month = summarise(per_day, flights = sum(flights)))
-(per_year  = summarise(per_month, flights = sum(flights)))
+(per_day   = summarize(daily, flights = n()))
+(per_month = summarize(per_day, flights = sum(flights)))
+(per_year  = summarize(per_month, flights = sum(flights)))
 
 a1 = group_by(flights, year, month, day)
 a2 = select(a1, arr_delay, dep_delay)
 a3 =
-  summarise(
+  summarize(
     a2,
     arr = mean(arr_delay),
     dep = mean(dep_delay))
@@ -172,7 +172,7 @@ a4 = filter(a3, arr > 30 | dep > 30)
 a4
 
 filter(
-  summarise(
+  summarize(
     select(
       daily,
       arr_delay, dep_delay),
@@ -183,7 +183,7 @@ filter(
 flights %>%
   group_by(year, month, day) %>%
   select(arr_delay, dep_delay) %>%
-  summarise(
+  summarize(
     arr = mean(arr_delay),
     dep = mean(dep_delay)) %>%
   filter(arr > 30 | dep > 30)
