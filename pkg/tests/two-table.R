@@ -25,21 +25,6 @@ library(nycflights13)
 
 
 
-
-#first time around
-# flights = copy_to(my_db, flights, temporary = TRUE)
-# airlines = copy_to(my_db, airlines, temporary = TRUE)
-# weather = copy_to(my_db, weather, temporary = TRUE)
-# planes = copy_to(my_db, planes, temporary = TRUE)
-# airports = copy_to(my_db, airports, temporary = TRUE)
-#
-# thereon
-# flights = tbl(my_db, "flights")
-# airlines = tbl(my_db, "airlines")
-# weather = tbl(my_db, "weather")
-# planes = tbl(my_db, "planes")
-# airports = tbl(my_db, "airports")
-
 flights2 =
   flights %>%
   select(year:day, hour, origin, dest, tailnum, carrier)
