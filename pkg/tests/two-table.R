@@ -19,11 +19,30 @@ library(dplyr)
 library(dplyr.spark.hive)
 library(purrr)
 
+copy_to_from_local =
+  function(src, x, name) {
+    tmpdir = tempfile()
+    dir.create(tmpdir)
+    tmpfile = tempfile(tmpdir = tmpdir)
+    write.table(x, file = tmpfile, sep = "\001", col.names = FALSE, row.names = FALSE, quote = FALSE)
+    load_to(my_db, url = tmpdir, schema = x, name = name, in.place = TRUE)}
+
 my_db = src_SparkSQL()
 
 library(nycflights13)
 
+cond.copy =
+  function(src, data, name) {
+    if(db_has_table(src$con, name))
+      tbl(src, name)
+    else
+      copy_to_from_local(src, data, name)}
 
+flights = cond.copy(my_db, flights, "flights")
+airlines = cond.copy(my_db, airlines, "airlines")
+weather = cond.copy(my_db, weather, "weather")
+planes = cond.copy(my_db, planes, "planes")
+airports = cond.copy(my_db, airports, "airports")
 
 flights2 =
   flights %>%
@@ -45,18 +64,12 @@ left_join(flights2, airports, c("origin" = "faa"))
 (df1 = data_frame(x = c(1, 2), y = 2:1))
 (df2 = data_frame(x = c(1, 3), a = 10, b = "a"))
 
-{if(!db_has_table(my_db$con, "df1")) {
-  tmpdir = tempfile(tmpdir = "/tmp")
-  dir.create(tmpdir)
-  tmp = tempfile(tmpdir = tmpdir)
-  write.table(df1, file = tmp, sep = "\001", col.names = FALSE, row.names = FALSE)
-  df1 = load_to(my_db, tmpdir, df1, name = "df1", in.place = TRUE)
-  tmp = tempfile(tmpdir = tmpdir)
-  write.table(df2, file = tmp, sep = "\001", col.names = FALSE, row.names = FALSE)
-  df2 = load_to(my_db, tmpdir, df2, name = "df2", in.place = TRUE)}
+if(!db_has_table(my_db$con, "df1")) {
+  copy_to_from_local(my_db, df1, "df1")
+  copy_to_from_local(my_db, df2, "df2")}
 else{
   df1 = tbl(my_db, "df1")
-  df2 = tbl(my_db, "df2")}}
+  df2 = tbl(my_db, "df2")}
 
 df1
 df2

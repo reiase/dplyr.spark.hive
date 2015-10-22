@@ -18,21 +18,25 @@
 library(dplyr)
 library(dplyr.spark.hive)
 
+copy_to_from_local =
+  function(src, x, name) {
+    tmpdir = tempfile()
+    dir.create(tmpdir)
+    tmpfile = tempfile(tmpdir = tmpdir)
+    write.table(x, file = tmpfile, sep = "\001", col.names = FALSE, row.names = FALSE, quote = FALSE)
+    load_to(my_db, url = tmpdir, schema = x, name = name, in.place = TRUE)}
+
 my_db = src_SparkSQL()
 
-
 library(Lahman)
-{if(db_has_table(my_db$con, "batting"))
-  batting = tbl(my_db, "batting")
-else {
-  tmpdir = tempfile(tmpdir = "/tmp")
-  dir.create(tmpdir)
-  tmp = tempfile(tmpdir = tmpdir)
-  write.table(Batting, file = tmp, sep = "\001", col.names = FALSE, row.names = FALSE)
-  batting = load_to(dest = my_db, url = tmpdir, schema = Batting, name = "batting", in.place = TRUE)}}
-batting <- select(batting, playerid, yearid, teamid, g, ab:h)
-batting <- arrange(batting, playerid, yearid, teamid)
-players <- group_by(batting, playerid)
+batting = {
+  if(db_has_table(my_db$con, "batting"))
+    batting = tbl(my_db, "batting")
+  else
+    copy_to_from_local(my_db, Batting, "batting")}
+batting = select(batting, playerid, yearid, teamid, g, ab:h)
+batting = arrange(batting, playerid, yearid, teamid)
+players = group_by(batting, playerid)
 cache(batting)
 cache(players)
 # For each player, find the two years with most hits

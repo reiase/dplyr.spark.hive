@@ -139,7 +139,7 @@ cmp =
     y = normalize(y)
     isTRUE(all.equal(x, y))}
 
-copy_to =
+copy_to_from_local =
   function(src, x, name) {
     tmpdir = tempfile()
     dir.create(tmpdir)

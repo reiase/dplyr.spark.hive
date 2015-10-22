@@ -18,6 +18,15 @@
 library(dplyr)
 library(dplyr.spark.hive)
 
+copy_to_from_local =
+  function(src, x, name) {
+    tmpdir = tempfile()
+    dir.create(tmpdir)
+    tmpfile = tempfile(tmpdir = tmpdir)
+    write.table(x, file = tmpfile, sep = "\001", col.names = FALSE, row.names = FALSE, quote = FALSE)
+    load_to(my_db, url = tmpdir, schema = x, name = name, in.place = TRUE)}
+
+
 my_db = src_SparkSQL()
 
 library(nycflights13)
@@ -25,20 +34,7 @@ flights = {
   if(db_has_table(my_db$con, "flights"))
     tbl(my_db, "flights")
   else{
-    tmpdir = tempfile(tmpdir = "/tmp")
-    dir.create(tmpdir)
-    tmpfile = tempfile(tmpdir = tmpdir)
-    write.table(
-      flights,
-      file = tmpfile,
-      sep = "\001",
-      col.names = FALSE,
-      row.names = FALSE)
-    load_to(
-      dest = my_db,
-      url = tmpdir,
-      schema = flights,
-      name = "flights")}}
+    copy_to_from_local(my_db, flights, "flights")}}
 flights
 cache(flights)
 
