@@ -56,7 +56,7 @@ c4 = arrange(c3, year, month, day, carrier)
 
 c4
 
-collect(c4, name = "c4", temporary = FALSE)
+c4_mem = collect(c4)
 c4$query$sql
 
 explain(c4)
