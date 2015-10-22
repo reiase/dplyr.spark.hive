@@ -62,8 +62,6 @@ c4$query$sql
 
 explain(c4)
 
-db_drop_table(my_db$con, "c4")
-
 flights %>%
   filter(year == 2013, month == 1, day == 1) %>%
   select(year, month, day, carrier, dep_delay, air_time, distance)  %>%
