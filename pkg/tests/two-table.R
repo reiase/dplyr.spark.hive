@@ -76,7 +76,6 @@ full_join(df2, df1) %>% collect
 #   anti_join(planes, by = "tailnum") %>%
 #   count(tailnum, sort = TRUE)
 
-df1 %>% nrow()
 inner_join(df1, df2, by = "x") %>% collect
 semi_join(df1, df2, by = "x") %>% collect
 
