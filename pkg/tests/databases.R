@@ -72,6 +72,8 @@ flights %>%
 
 daily = group_by(flights, year, month, day)
 
+summarise(daily, arr_delay = mean(arr_delay))
+
 bestworst =
   daily %>%
   select(flight, arr_delay) %>%
@@ -85,7 +87,6 @@ ranked = daily %>%
   mutate(rank = rank(desc(arr_delay)))
 ranked
 
-summarise(daily, arr_delay = mean(arr_delay))
 
 
 library(ggplot2)
@@ -130,16 +131,11 @@ transmute(
   gain = arr_delay - dep_delay,
   gain_per_hour = gain / (air_time / 60))
 
-summarise(
-  flights,
-  delay = mean(dep_delay))
 
 #not in dplyr for sql
 # slice(flights, 1:10)
 # sample_n(flights, 10)
 # sample_frac(flights, 0.01)
-
-
 
 by_tailnum = group_by(flights, tailnum)
 delay =
