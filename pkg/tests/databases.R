@@ -47,7 +47,7 @@ select(flights, year:day, dep_delay, arr_delay)
 filter(flights, dep_delay > 240)
 arrange(flights, year, month, day)
 mutate(flights, speed = air_time / distance)
-summarise(flights, delay = mean(dep_time))
+summarise(flights, delay = mean(dep_delay))
 
 c1 = filter(flights, year == 2013, month == 1, day == 1)
 c2 = select(c1, year, month, day, carrier, dep_delay, air_time, distance)
