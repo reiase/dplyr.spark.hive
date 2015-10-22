@@ -57,6 +57,7 @@ c4 = arrange(c3, year, month, day, carrier)
 c4
 
 c4_mem = collect(c4)
+class(c4_mem)
 c4$query$sql
 
 explain(c4)
