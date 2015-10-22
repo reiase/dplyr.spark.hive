@@ -23,21 +23,7 @@ my_db = src_SparkSQL()
 
 library(nycflights13)
 
-ls("package:nycflights13") %>%
-  keep(db_has_table(my_db$con,.)) %>%
-  map(~assign(., tbl(my_db, .), envir = .GlobalEnv))
 
-ls("package:nycflights13") %>%
-  discard(db_has_table(my_db$con,.)) %>%
-  map(
-    ~assign(
-      ., {
-        tmpdir = tempfile(tmpdir = "/tmp")
-        dir.create(tmpdir)
-        tmpfile = tempfile(tmpdir = tmpdir)
-        write.table(get(.), file = tmpfile, sep = "\001", col.names = FALSE, row.names = FALSE)
-        load_to(my_db, url = tmpdir, schema = get(.), name = ., in.place = TRUE)},
-      envir = .GlobalEnv))
 
 
 #first time around
