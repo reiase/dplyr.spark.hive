@@ -81,7 +81,8 @@ bestworst
 
 bestworst$query$sql
 
-ranked = daily %>%
+ranked =
+  daily %>%
   select(arr_delay) %>%
   mutate(rank = rank(desc(arr_delay)))
 ranked
