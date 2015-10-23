@@ -60,16 +60,15 @@ left_join(flights2, airports, c("dest" = "faa"))
 
 left_join(flights2, airports, c("origin" = "faa"))
 
-
 (df1 = data_frame(x = c(1, 2), y = 2:1))
 (df2 = data_frame(x = c(1, 3), a = 10, b = "a"))
 
-if(!db_has_table(my_db$con, "df1")) {
+{if(!db_has_table(my_db$con, "df1")) {
   copy_to_from_local(my_db, df1, "df1")
   copy_to_from_local(my_db, df2, "df2")}
 else{
   df1 = tbl(my_db, "df1")
-  df2 = tbl(my_db, "df2")}
+  df2 = tbl(my_db, "df2")}}
 
 df1
 df2
