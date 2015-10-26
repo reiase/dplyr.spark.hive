@@ -169,14 +169,14 @@ schema =
     stop("Schema detection not implemented yet")
 
 load_to =
-  function( dest, url, name, schema, temporary, in.place, ...)
+  function( dest, name, url, temporary, in.place, ...)
     UseMethod("load_to")
 
 load_to.src_HS2 =
   function(
     dest,
-    url,
     name = dedot(basename(url)),
+    url,
     schema = schema(url),
     temporary = FALSE,
     in.place = TRUE,
@@ -199,6 +199,28 @@ load_to.src_HS2 =
     if(!in.place)
       db_load_table(con = dest$con, table = name, url)
     tbl(dest, name)}
+
+load_to.src_SparkSQL =
+  function(
+    dest,
+    name = dedot(basename(url)),
+    url,
+    format = NULL,
+    temporary = FALSE,
+    in.place = TRUE,
+    ...) {
+    sql =
+      build_sql(
+        "CREATE ",
+        if(in.place) sql("EXTERNAL "),
+        if(temporary) sql("TEMPORARY "),
+        "TABLE ", ident(name), " ",
+        if(!is.null(format)) sql(paste0("USING ", format, " ")),
+        "OPTIONS (path  ", encodeString(url), ")",
+        con = dest$con)
+    RJDBC::dbSendUpdate(dest$con, sql)
+    tbl(dest, name)}
+
 
 load_to.default =
   function(dest, url, name, schema, temporary, in.place, ...){
