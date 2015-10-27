@@ -18,14 +18,7 @@
 library(dplyr)
 library(dplyr.spark.hive)
 
-copy_to_from_local =
-  function(src, x, name) {
-    tmpdir = tempfile()
-    dir.create(tmpdir)
-    tmpfile = tempfile(tmpdir = tmpdir)
-    write.table(x, file = tmpfile, sep = "\001", col.names = FALSE, row.names = FALSE, quote = FALSE)
-    load_to(my_db, url = tmpdir, schema = x, name = name, in.place = TRUE)}
-
+copy_to_from_local = copy_to_from_local = dplyr.spark.hive:::copy_to_from_local
 
 my_db = src_SparkSQL()
 

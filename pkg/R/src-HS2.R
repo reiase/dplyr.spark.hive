@@ -164,6 +164,13 @@ copy_to.src_SparkSQL =
   function(dest, df, name, ...)
     stop("copy not implemented for SparkSQL, use load_to instead")
 
+copy_to_from_local =
+  function(src, x, name) {
+    tmpdir = tempfile()
+    dir.create(tmpdir)
+    tmpfile = tempfile(tmpdir = tmpdir)
+    write.table(x, file = tmpfile, sep = "\001", col.names = FALSE, row.names = FALSE, quote = FALSE)
+    load_to(my_db, url = tmpdir, schema = x, name = name, in.place = TRUE)}
 schema =
   function(data)
     stop("Schema detection not implemented yet")
