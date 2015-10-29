@@ -12,10 +12,10 @@ cache(tbl)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{tbl}{A table of class \code{tbl_SparkSQL}
+  \item{tbl}{A table of class \code{tbl_SparkSQL}}
 }
 \details{This is an extension API not present in dplyr. Don't try it on other databases, it won't work}
-}
+
 \value{
 The same table passed as the only argument. This function works by side effects and the return value can be safely discarded.
 }
