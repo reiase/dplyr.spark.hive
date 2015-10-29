@@ -18,7 +18,7 @@
 library(dplyr)
 library(dplyr.spark.hive)
 
-copy_to_from_local = copy_to_from_local = dplyr.spark.hive:::copy_to_from_local
+copy_to_from_local = dplyr.spark.hive:::copy_to_from_local
 
 my_db = src_SparkSQL()
 
