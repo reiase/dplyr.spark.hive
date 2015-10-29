@@ -94,3 +94,20 @@ You can find a number of examples derived from @hadley's own tutorials for dplyr
 If you notice any problems, please create an item in the [issue tracker](http://github.com/piccolbo/dplyr.spark.hive/issues).
 
 
+## Backend specific features
+
+For highly technical reasons which I won't bother you with, `copy_to` is not supported on Spark and slow on Hive. To make up, here are  more useful features available only with these backends:
+
+`load_to`
+
+:    create a table in spark or hive from an external data set, such as an hdfs file or JDBC connection. More extensive capabilities on Spark, check the manual. Scalable, unlike `copy_to`.
+
+`cache`
+
+:    keep a data set in distributed memory as far as possible, spark-only.
+
+`tbls`
+
+:    create a `tbl` object for each table in SparkSQL or Hive.
+
+
