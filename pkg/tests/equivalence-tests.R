@@ -28,8 +28,8 @@ rsupported.data.frame =
     df =
       rdata.frame(
         elements =
-          mixture(list(rinteger, rdouble, rcharacter, rlogical, rDate)),
-        nrow = c(min = 1),
+          mixture(list(rinteger, rdouble, rcharacter)),
+        nrow = c(min = 1000, max =2000), #schema autodetect fails on small dfs
         ncol = c(min = 1))
     names(df) = gsub("\\.", "_", names(df))
     df}
@@ -40,7 +40,7 @@ rnumeric.data.frame =
       rdata.frame(
         elements =
           mixture(list(rinteger, rdouble)),
-        nrow = c(min = 1),
+        nrow = c(min = 1000, max =2000),
         ncol = c(min = 1))
     names(df) = gsub("\\.", "_", names(df))
     df}
@@ -151,7 +151,7 @@ equiv.test =
           retval =
             cmp(
               rx(x),
-              collect(rx(copy_to(src, x, name))))
+              collect(rx(copy_to_from_local(src, x, name))))
           db_drop_table(table = paste0('`', name,'`'), con = src$con)
           retval}),
       about = deparse(substitute(expr.gen)))}
