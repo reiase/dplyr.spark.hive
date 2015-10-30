@@ -28,23 +28,23 @@ batting = {
     batting = tbl(my_db, "batting")
   else
     copy_to_from_local(my_db, Batting, "batting")}
-batting = select(batting, playerid, yearid, teamid, g, ab:h)
-batting = arrange(batting, playerid, yearid, teamid)
-players = group_by(batting, playerid)
+batting = select(batting, playerID, yearID, teamID, G, AB:H)
+batting = arrange(batting, playerID, yearID, teamID)
+players = group_by(batting, playerID)
 cache(batting)
 cache(players)
 # For each player, find the two years with most hits
-filter(players, min_rank(desc(h)) <= 2 & h > 0)
+filter(players, min_rank(desc(H)) <= 2 & H > 0)
 # Within each player, rank each year by the number of games played
-mutate(players, g_rank = min_rank(g))
+mutate(players, g_rank = min_rank(G))
 
 # For each player, find every year that was better than the previous year
-filter(players, g > lag(g))
+filter(players, G > lag(G))
 # For each player, compute avg change in games played per year
-mutate(players, g_change = (g - lag(g)) / (yearid - lag(yearid)))
+mutate(players, g_change = (G - lag(G)) / (yearID - lag(yearID)))
 
 # For each player, find all where they played more games than average
-filter(players, g > mean(g))
+filter(players, G > mean(G))
 # For each, player compute a z score based on number of games played
-mutate(players, g_z = (g - mean(g)) / sd(g))
+mutate(players, g_z = (G - mean(G)) / sd(G))
 

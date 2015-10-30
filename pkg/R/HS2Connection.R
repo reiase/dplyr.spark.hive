@@ -174,7 +174,7 @@ sql_escape_string.HS2Connection =
 
 sql_escape_ident.HS2Connection =
   function(con, x)
-    sql_quote(tolower(x), "`")
+    sql_quote(x, "`")
 
 #modeled after sql_join methods in http://github.com/hadley/dplyr,
 #under MIT license
