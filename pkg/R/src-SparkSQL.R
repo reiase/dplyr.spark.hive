@@ -62,7 +62,7 @@ copy_to.src_SparkSQL =
 ExternalData =
   function(parser, options)
     structure(
-      list(parser = parser, options = options),
+      list(parser = parser, options = discard(options, is.null)),
       class = "ExternalData")
 
 CSVData =
