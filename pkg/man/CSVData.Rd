@@ -8,7 +8,8 @@ Holds location and parsing information for an External data source in CSV format
 }
 \usage{
 CSVData(url, header = TRUE, delimiter = ",", quote = "\"",
-parserLib = c("commons", "univocity"), mode = c("PERMISSIVE", "DROPMALFORMED", "FAILFAST"),
+parserLib = c("commons", "univocity"),
+            mode = c("PERMISSIVE", "DROPMALFORMED", "FAILFAST"),
 charset = "UTF-8", inferSchema = TRUE, comment = "#")
 }
 %- maybe also 'usage' for other objects documented here.

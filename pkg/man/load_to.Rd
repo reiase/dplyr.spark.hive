@@ -7,22 +7,21 @@ Create a table from a stored dataset.
 Create a table from a stored datasets identified by a URL.
 }
 \usage{
-load_to(dest, data, name, temporary, in.place, ...)
+load_to(dest, name, data, temporary, in.place, ...)
 \method{load_to}{src_Hive}(
     dest,
-    data,
     name,
+    data,
     temporary = FALSE,
     in.place = TRUE,
-    schema = schema(url),
+    schema = schema(data),
     ...)
 \method{load_to}{src_SparkSQL}(
     dest,
-    data,
     name,
+    data,
     temporary = FALSE,
-    in.place = TRUE,
-    format = NULL,
+    in.place = FALSE,
     ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -37,14 +36,11 @@ For Hive, a url pointing to the stored data. Which url schemes are supported dep
 The name of the table to create}
   \item{temporary}{
 Wether the table created should be temporary}
-  \item{in.place}{
-Whether to move the data to the database own storage or access it in place}
+  \item{in.place}{Whether to move the data to the database own storage or access it in place. On Spark, set to FALSE only (tables will always be external anyway)}
   \item{schema}{
 The schema, provided as a named character vector of types (R types) or  a data frame containing a small sample of the data to be loaded.
 }
-  \item{format}{the format serde to use as a java class}
-  \item{\dots}{
-Unused, necessary to appease the R gods}
+  \item{\dots}{Unused, necessary to appease the R gods}
 }
 \details{
 Currently, it can only use the default format which is \code{\001}-separated CSV, no headers, no rownames, no quotes. Format support is on the roadmap. The method for class \code{src_HS2} works for both \code{src_SparkSQL} and \code{src_Hive}. It's a case of documentation-induced implementation detail leakage. The default method just fails with an error message, as \code{load_to} is an API extension specfic to this package and not present in \code{dplyr}.

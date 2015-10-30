@@ -9,7 +9,8 @@ Describe an external data source for use in \code{\link{load_to}}
 Holds information about an external data sources held in a database that supports a JDBC server (e.g. postgresql).
 }
 \usage{
-JDBCData(url, dbtable, driver, partitionColumn = NULL, lowerBound = NULL, upperBound = NULL, numPartitions = NULL)
+JDBCData(url, dbtable, driver, partitionColumn = NULL, lowerBound = NULL,
+         upperBound = NULL, numPartitions = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
