@@ -104,13 +104,13 @@ JDBCData =
     ExternalData(
       "org.apache.spark.sql.jdbc",
       list(
-      url = url,
-      dbtable = dbtable,
-      driver = driver,
-      partitionColumn = partitionColumn,
-      lowerBound = lowerBound,
-      upperBound = upperBound,
-      numPartitions = numPartitions))}
+        url = url,
+        dbtable = dbtable,
+        driver = driver,
+        partitionColumn = partitionColumn,
+        lowerBound = lowerBound,
+        upperBound = upperBound,
+        numPartitions = numPartitions))}
 
 load_to.src_SparkSQL =
   function(
