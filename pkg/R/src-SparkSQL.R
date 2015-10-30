@@ -65,19 +65,6 @@ ExternalData =
       list(parser = parser, options = options),
       class = "ExternalData")
 
-as.ExternalData = function(x, ...) UseMethod("as.ExternalData")
-
-as.ExternalData.ExternalData = identity
-
-as.ExternalData.character =
-  function(x, ...)
-    switch(
-      x,
-      csv = CSVExternalData(x, list(...)),
-      json = ExternalData("org.apache.spark.sql.json", list(...)),
-      parquet = ExternalData("org.apache.spark.sql.parquet", list(...)),
-      ExternalData(x, list(...)))
-
 CSVData =
   function(
     url,
