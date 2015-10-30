@@ -103,13 +103,14 @@ JDBCData =
     stopifnot(opt.tally == 0 || opt.tally == 4)
     ExternalData(
       "org.apache.spark.sql.jdbc",
+      list(
       url = url,
       dbtable = dbtable,
       driver = driver,
       partitionColumn = partitionColumn,
       lowerBound = lowerBound,
       upperBound = upperBound,
-      numPartitions = numPartitions)}
+      numPartitions = numPartitions))}
 
 load_to.src_SparkSQL =
   function(
@@ -134,10 +135,10 @@ load_to.src_SparkSQL =
     tbl(dest, name)}
 
 
-copy_to_from_local =
+copy_to_from_local = #this to be used only when thrift server is local
   function(src, x, name) {
     tmpdir = tempfile()
     dir.create(tmpdir)
     tmpfile = tempfile(tmpdir = tmpdir)
     write.table(x, file = tmpfile, sep = ",", col.names = TRUE, row.names = FALSE, quote = TRUE)
-    load_to(my_db, data = CSVData(url = tmpdir), name = name)}
+    load_to(src, data = CSVData(url = tmpdir), name = name)}
