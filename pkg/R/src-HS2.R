@@ -79,20 +79,44 @@ make.win.fun =
 src_translate_env.src_HS2 =
   function(x)
     sql_variant(
-      scalar = base_scalar,
+      scalar =
+        sql_translator(
+          .parent = base_scalar,
+          rand =
+            function(seed = NULL)
+              build_sql(sql("rand"), if(!is.null(seed)) list(as.integer(seed))),
+          randn =
+            function(seed =  NULL)
+              build_sql(sql("randn"), if(!is.null(seed)) list(as.integer(seed))),
+          round =
+            function(x, d = 0) build_sql(sql("round"), list(x, as.integer(d))),
+          bround =
+            function(x, d = 0) build_sql(sql("bround"), list(x, as.integer(d))),
+          as.character = function (x) build_sql("CAST(", x, " AS STRING)"),
+          as.numeric = function (x) build_sql("CAST(", x, " AS DOUBLE)")
+          ),
       aggregate =
         sql_translator(
           .parent = base_agg,
           n = function() sql("COUNT(*)"),
           sd =  sql_prefix("STDDEV_SAMP"),
-          var = sql_prefix("VAR_SAMP")),
+          var = sql_prefix("VAR_SAMP"),
+          covar = sql_prefix("COVAR_POP"),
+          cor = sql_prefix("CORR"),
+          quantile = sql_prefix("PERCENTILE_APPROX")),
       window =
         sql_translator(
           .parent = base_win,
           n = function() sql("COUNT(*)"),
           sd =  make.win.fun("STDDEV_SAMP"),
           var = make.win.fun("VAR_SAMP"),
-          quantile = make.win.fun("PERCENTILE_APPROX")))
+          covar = make.win.fun("COVAR_POP"),
+          cor = make.win.fun("COR_POP"),
+          quantile = make.win.fun("PERCENTILE_APPROX"),
+          lag = function(x, n = 1L, default = NA, order = NULL) base_win$lag(x, as.integer(n), default, order),
+          lead = function(x, n = 1L, default = NA, order = NULL) base_win$lead(x, as.integer(n), default, order),
+          ntile = function (order_by, n) base_win$ntile(order_by, as.integer(n))
+          ))
 
 dedot = function(x) gsub("\\.", "_", x)
 
