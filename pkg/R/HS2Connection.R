@@ -114,8 +114,11 @@ db_create_index.HS2Connection =
     TRUE
 
 # this is only to replace getquery with sendupdate and to lowercase names
+# this is an ugly mash up of spark and hive. USING seems to be spark only
+# LOCATION hive only. One could have two methods but with code duplication
+# Try to disentantgle later
 db_create_table.HS2Connection =
-  function(con, table, types, temporary = TRUE, url = NULL, ...) {
+  function(con, table, types, temporary = TRUE, url = NULL, using = NULL, ...) {
     external = !is.null(url)
     table = tolower(table)
     stopifnot(is.character(table) && length(table) == 1)
@@ -138,7 +141,16 @@ db_create_table.HS2Connection =
         if(temporary) sql("TEMPORARY "),
         "TABLE ", ident(table), " ",
         fields,
-        if(external) build_sql(sql(" LOCATION "), encodeString(url)),
+        if(external & !is.null(url)) build_sql(sql(" LOCATION "), encodeString(url)),
+        if(!is.null(using))
+          build_sql(
+            sql(paste0("USING ", using$parser, " ")),
+            "OPTIONS (",
+            sql(
+              paste0(
+                names(using$options), " '",
+                as.character(using$options), "'",
+                collapse = ", ")), ")"),
         con = con)
     RJDBC::dbSendUpdate(con, sql)}
 

@@ -113,25 +113,15 @@ JDBCData =
         numPartitions = numPartitions))}
 
 load_to.src_SparkSQL =
-  function(
-    dest,
-    name,
-    data,
-    temporary = FALSE,
-    in.place = FALSE,
-    ...) {
+  function(dest, name, data, temporary = FALSE, in.place = FALSE, schema = NULL, ...) {
+    types = {
+      if(is.character(schema)) schema
+      else {
+        if (is.data.frame(schema)){
+          setNames(db_data_type(dest$con, schema), colnames(schema))}
+        else stop("Don't know how to extract a schema from this")}}
     stopifnot(!in.place)
-    sql =
-      build_sql(
-        "CREATE ",
-        if(in.place) sql("EXTERNAL "),
-        if(temporary) sql("TEMPORARY "),
-        "TABLE ", ident(name), " ",
-        sql(paste0("USING ", data$parser, " ")),
-        "OPTIONS (",
-        sql(paste0(names(data$options), " '", as.character(data$options), "'", collapse = ", ")), ")",
-        con = dest$con)
-    RJDBC::dbSendUpdate(dest$con, sql)
+    db_create_table(con = dest$con, table = name, types = types, temporary = temporary, external = in.place, using = data)
     tbl(dest, name)}
 
 
@@ -141,4 +131,4 @@ copy_to_from_local = #this to be used only when thrift server is local
     dir.create(tmpdir)
     tmpfile = tempfile(tmpdir = tmpdir)
     write.table(x, file = tmpfile, sep = ",", col.names = TRUE, row.names = FALSE, quote = TRUE)
-    load_to(src, data = CSVData(url = tmpdir), name = name)}
+    load_to(src, data = CSVData(url = tmpdir), name = name, schema = x)}
