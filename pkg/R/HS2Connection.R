@@ -122,18 +122,21 @@ db_create_table.HS2Connection =
     external = !is.null(url)
     table = tolower(table)
     stopifnot(is.character(table) && length(table) == 1)
-    stopifnot(is.character(types))
-    field_names =
-      escape(
-        ident(names(types)),
-        collapse = NULL,
-        con = con)
-    fields =
-      dplyr:::sql_vector(
-        paste0(field_names, " ", types),
-        parens = TRUE,
-        collapse = ", ",
-        con = con)
+    stopifnot(is.character(types) || is.null(types))
+    if(!is.null(types)) {
+      field_names =
+        escape(
+          ident(names(types)),
+          collapse = NULL,
+          con = con)
+      fields =
+        dplyr:::sql_vector(
+          paste0(field_names, " ", types),
+          parens = TRUE,
+          collapse = ", ",
+        con = con)}
+    else
+      fields = NULL
     sql =
       build_sql(
         "CREATE ",
