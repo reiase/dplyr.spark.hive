@@ -49,7 +49,7 @@ collect.tbl_HS2 =
 
 head.tbl_HS2 =
   function(x, n = 6L, ...) {
-    x$query = dplyr:::build_query(x, n)
+    x$query = dplyr:::build_query(x, as.integer(n))
     collect.tbl_HS2(x)}
 
 #modeled after mutate_ methods in http://github.com/hadley/dplyr,
