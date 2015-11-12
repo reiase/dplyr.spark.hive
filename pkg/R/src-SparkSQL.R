@@ -118,8 +118,7 @@ load_to.src_SparkSQL =
       if(is.character(schema)) schema
       else {
         if (is.data.frame(schema)){
-          setNames(db_data_type(dest$con, schema), colnames(schema))}
-        else stop("Don't know how to extract a schema from this")}}
+          setNames(db_data_type(dest$con, schema), colnames(schema))}}}
     stopifnot(!in.place)
     db_create_table(con = dest$con, table = name, types = types, temporary = temporary, external = in.place, using = data)
     tbl(dest, name)}
