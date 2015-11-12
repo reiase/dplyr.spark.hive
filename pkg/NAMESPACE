@@ -1,4 +1,5 @@
 S3method(collect, tbl_HS2)
+S3method(head, tbl_HS2)
 S3method(copy_to, src_SparkSQL)
 S3method(copy_to, src_Hive)
 S3method(db_begin, HS2Connection)

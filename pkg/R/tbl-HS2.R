@@ -36,16 +36,21 @@ convert.from.DB =
 # and do type conversions, it's a work around for some type blunder in fetch
 collect.tbl_HS2 =
   function(x, ...) {
-    xs = compute(suppressMessages(top_n(x, 1)), temporary = FALSE)
+    x = compute(x, temporary = FALSE)
     res = dplyr:::collect.tbl_sql(x, ...)
     db.types =
-      DBI::dbGetQuery(xs$src$con, paste("describe", xs$from))$data_type
-    db_drop_table(table = paste0('`', xs$from,'`'), con = xs$src$con)
+      DBI::dbGetQuery(x$src$con, paste("describe", x$from))$data_type
+    db_drop_table(table = paste0('`', x$from,'`'), con = x$src$con)
     sapply(
       seq_along(res),
       function(i)
         res[[i]] <<- convert.from.DB(db.types[i])(res[[i]]))
     res}
+
+head.tbl_HS2 =
+  function(x, n = 6L, ...) {
+    x$query = dplyr:::build_query(x, n)
+    collect.tbl_HS2(x)}
 
 #modeled after mutate_ methods in http://github.com/hadley/dplyr,
 #under MIT license
