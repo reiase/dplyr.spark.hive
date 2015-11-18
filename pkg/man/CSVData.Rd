@@ -35,7 +35,7 @@ Parsing mode can be PERMISSIVE, inserting NAs when parsing is troublesome, DROPM
   Any valid charset name
 }
   \item{inferSchema}{
-  Whether to try and infer the schema. At this time there is no way to provide a schema with this function, so this has to be TRUE. In the future it may become possible to provide a schema and skip schema inference.
+  Whether to try and infer the schema. It require two passes of the data and it is buggy.
 }
   \item{comment}{
 Whether to consider lines starting with this character comments, hence skip them.
