@@ -130,12 +130,8 @@ copy_to.src_Hive =
     names(df) = dedot(names(df))
     dplyr:::copy_to.src_sql(dest, df, name, ...)}
 
-schema =
-  function(data)
-    stop("Schema detection not implemented yet")
-
 load_to =
-  function( dest, name, data, temporary, in.place, ...)
+  function( dest, name, data, temporary, in.place, schema = NULL, ...)
     UseMethod("load_to")
 
 load_to.src_Hive =
@@ -145,7 +141,7 @@ load_to.src_Hive =
     data,
     temporary = FALSE,
     in.place = TRUE,
-    schema = schema(data),
+    schema = NULL,
     ...) {
     types = {
       if(is.character(schema)) schema
@@ -173,7 +169,7 @@ tbl.src_HS2 =
     tbl_sql(
       map(strsplit(class(src)[1:2], "_"), 2),
       src = src,
-      from = if(is.sql(from)) from else tolower(from), ...)}
+      from = from, ...)}
 
 tbls = function(src, ...) UseMethod("tbls")
 
