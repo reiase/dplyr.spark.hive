@@ -125,9 +125,18 @@ load_to.src_SparkSQL =
 
 
 copy_to_from_local = #this to be used only when thrift server is local
-  function(src, x, name) {
-    tmpdir = tempfile()
+  function(
+    src,
+    x,
+    name,
+    temporary = TRUE,
+    location = {
+      if(temporary)
+        tempfile()
+    else
+      stop("Please provide location")}) {
+    tmpdir = location
     dir.create(tmpdir)
     tmpfile = tempfile(tmpdir = tmpdir)
     write.table(x, file = tmpfile, sep = ",", col.names = TRUE, row.names = FALSE, quote = TRUE)
-    load_to(src, data = CSVData(url = tmpdir), name = name, schema = x)}
+    load_to(src, data = CSVData(url = tmpdir), name = name, temporary = temporary, in.place = FALSE)} # , schema = x)} this doesn't work yet, reported
