@@ -10,5 +10,5 @@ Maintainer: Antonio Piccolboni <antonio@piccolboni.info>
 Description: Add spark and hive data sources for dplyr.
 URL: https://github.com/piccolbo/dplyr.spark.hive
 License: Apache License(== 2.0)
-Imports: RJDBC, dplyr, DBI, purrr, lazyeval
+Imports: RJDBC, dplyr, DBI, purrr, lazyeval, utils
 Suggests: Lahman, ggplot2, nycflights13, quickcheck
