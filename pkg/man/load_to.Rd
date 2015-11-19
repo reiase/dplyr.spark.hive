@@ -7,14 +7,14 @@ Create a table from a stored dataset.
 Create a table from a stored datasets identified by a URL.
 }
 \usage{
-load_to(dest, name, data, temporary, in.place, ...)
+load_to(dest, name, data, temporary, in.place, schema = NULL, ...)
 \method{load_to}{src_Hive}(
     dest,
     name,
     data,
     temporary = FALSE,
     in.place = TRUE,
-    schema = schema(data),
+    schema = NULL,
     ...)
 \method{load_to}{src_SparkSQL}(
     dest,
@@ -22,6 +22,7 @@ load_to(dest, name, data, temporary, in.place, ...)
     data,
     temporary = FALSE,
     in.place = FALSE,
+    schema = NULL,
     ...)
 }
 %- maybe also 'usage' for other objects documented here.
