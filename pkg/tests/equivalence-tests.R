@@ -148,11 +148,11 @@ equiv.test =
         x = dfgen(),
         rx = expr.gen(x),
         name = dplyr:::random_table_name(), {
+          on.exit(db_drop_table(table = paste0('`', name,'`'), con = src$con))
           retval =
             cmp(
               rx(x),
               collect(rx(copy_to_from_local(src, x, name))))
-          db_drop_table(table = paste0('`', name,'`'), con = src$con)
           retval}),
       about = deparse(substitute(expr.gen)))}
 
