@@ -1,8 +1,8 @@
 Package: dplyr.spark.hive
 Type: Package
 Title: Scalable Data Manipulation Via Spark
-Version: 0.4.0
-Date: 2015-11-01
+Version: 0.5.0
+Date: 2015-11-19
 Authors@R: c(
   person("Revolution Analytics", email = "rhadoop@revolutionanalytics.com", role = c("aut", "cre", "cph")),
   person("Per Data LLC", email = "antonio@piccolboni.info", role = c("aut", "cph")))
