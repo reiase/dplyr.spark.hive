@@ -80,13 +80,13 @@ CSVData =
       "com.databricks.spark.csv",
       list(
         path = url,
-        header = tolower(as.character(header)),
+        header = tolower(header),
         delimiter = delimiter,
         quote = quote,
         parserLib = match.arg(parserLib),
         mode = match.arg(mode),
         charset = charset,
-        inferSchema = tolower(as.character(inferSchema)),
+        inferSchema = tolower(inferSchema),
         comment = comment))
 
 JDBCData =
