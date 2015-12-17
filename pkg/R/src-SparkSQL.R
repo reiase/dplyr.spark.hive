@@ -139,4 +139,4 @@ copy_to_from_local = #this to be used only when thrift server is local
     dir.create(tmpdir)
     tmpfile = tempfile(tmpdir = tmpdir)
     write.table(x, file = tmpfile, sep = ",", col.names = TRUE, row.names = FALSE, quote = TRUE)
-    load_to(src, data = CSVData(url = tmpdir), name = name, temporary = temporary, in.place = FALSE)} # , schema = x)} this doesn't work yet, reported
+    load_to(src, data = CSVData(url = tmpdir, mode = "FAILFAST"), name = name, temporary = temporary, in.place = FALSE, schema = x)} # , schema = x)} this doesn't work yet, reported
