@@ -60,7 +60,7 @@ src_Hive =
         Sys.getenv("HIVE_SERVER2_THRIFT_PORT"),
         10000),
     ...){
-    src_HS2(host, port, "Hive", NULL), ...}
+    src_HS2(host, port, "Hive", NULL, ...)}
 
 src_desc.src_HS2 =
   function(x) {
