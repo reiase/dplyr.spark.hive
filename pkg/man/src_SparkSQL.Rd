@@ -19,7 +19,8 @@ src_SparkSQL(
       Sys.getenv("HIVE_SERVER2_THRIFT_PORT"),
       10000),
   start.server = FALSE,
-  server.opts = list())
+  server.opts = list(),
+  ...)
 src_Hive(
   host =
     first.not.empty(
@@ -28,7 +29,8 @@ src_Hive(
   port =
     first.not.empty(
       Sys.getenv("HIVE_SERVER2_THRIFT_PORT"),
-      10000))
+      10000),
+  ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -38,6 +40,7 @@ src_Hive(
   \item{port}{ The port on which the thirft server is listening}
   \item{start.server}{Whether to start the Spark thrift server, defaults to using one if already running, starting one otherwise. Requires SPARK_HOME to be set}
   \item{server.opts}{Server options, as a named list, will be added to command to start the Spark thrift server, see \url{http://spark.apache.org/docs/latest/sql-programming-guide.html#running-the-thrift-jdbcodbc-server}}
+  \item{...}{Further arguments passed to \link{dbConnect} such as \code{dbname}, \code{user} or \code{password}.}
 }
 
 \details{
@@ -50,4 +53,5 @@ An object of class \code{src_SparkSQL} or \code{src_Hive}. Use it like any other
 
 \examples{
    #See the \code{dplyr} tutorial.
+   browseVignettes('dplyr')
 }
