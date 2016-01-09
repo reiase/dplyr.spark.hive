@@ -76,6 +76,7 @@ CSVData =
     mode = c("PERMISSIVE", "DROPMALFORMED", "FAILFAST"),
     charset = 'UTF-8',
     inferSchema = TRUE,
+    nullValues = "NA",
     comment = "#")
     ExternalData(
       "com.databricks.spark.csv",
@@ -126,9 +127,9 @@ load_to.src_SparkSQL =
 
 
 copy_to_from_local = #this to be used only when thrift server is local
-  function(src, x, name) {
+  function(src, x, name, ...) {
     tmpdir = tempfile()
     dir.create(tmpdir)
     tmpfile = tempfile(tmpdir = tmpdir)
     write.table(x, file = tmpfile, sep = ",", col.names = TRUE, row.names = FALSE, quote = TRUE)
-    load_to(src, data = CSVData(url = tmpdir), name = name, schema = x)}
+    load_to(src, data = CSVData(url = tmpdir, ...), name = name, schema = x)}
