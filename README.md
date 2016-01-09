@@ -10,7 +10,7 @@ The current state of the project is:
  - most `dplyr` features supported
  - adds some `spark`-specific goodies, like *caching* tables.
  - can go succesfully through tutorials for `dplyr` like any other database backend. 
- - not yet endowed with a thorugh test suite. Nonetheless we expect it to inherit much of its correctness, scalability and robustness from its main dependencies, `dplyr` and `spark`.
+ - test suite is work in progress. Nonetheless we expect it to inherit much of its correctness, scalability and robustness from its main dependencies, `dplyr` and `spark`.
  - we don't recommend production use yet
 
 ## Installation
@@ -60,7 +60,7 @@ To start the thrift server from R, you need one more variable set, `SPARK_HOME`,
 
 
 
-The current version is 0.4.0 .
+The current version is 0.5.0 .
 
 To install the latest release and its dependencies, enter the following two commands
 

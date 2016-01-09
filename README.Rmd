@@ -18,7 +18,7 @@ The current state of the project is:
  - most `dplyr` features supported
  - adds some `spark`-specific goodies, like *caching* tables.
  - can go succesfully through tutorials for `dplyr` like any other database backend. 
- - not yet endowed with a thorugh test suite. Nonetheless we expect it to inherit much of its correctness, scalability and robustness from its main dependencies, `dplyr` and `spark`.
+ - test suite is work in progress. Nonetheless we expect it to inherit much of its correctness, scalability and robustness from its main dependencies, `dplyr` and `spark`.
  - we don't recommend production use yet
 
 ## Installation
