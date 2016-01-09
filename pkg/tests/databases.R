@@ -27,7 +27,7 @@ flights = {
   if(db_has_table(my_db$con, "flights"))
     tbl(my_db, "flights")
   else{
-    copy_to_from_local(my_db, flights, "flights")}}
+    copy_to_from_local(my_db, flights, "flights",  mode = "DROPMALFORMED")}}
 flights
 cache(flights)
 
