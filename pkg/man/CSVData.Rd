@@ -38,7 +38,7 @@ Parsing mode can be PERMISSIVE, inserting NAs when parsing is troublesome, DROPM
   \item{inferSchema}{
   Whether to try and infer the schema. It require two passes of the data and it is buggy.
 }
-  \item{nullValues}{What string to construe as null value; please note backends have no distinct notion of NA, whereas R allows no nulls in atomi columns of dataframes, so we are mapping nulls to NAs}
+  \item{nullValues}{What string to construe as null value; please note backends have no distinct notion of NA, whereas R allows no nulls in atomi columns of dataframes, so we are mapping nulls to NAs. Not supported yet by the backend}
   \item{comment}{Whether to consider lines starting with this character comments, hence skip them.
 }
 }
