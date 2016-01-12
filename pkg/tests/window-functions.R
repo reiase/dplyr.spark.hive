@@ -27,7 +27,7 @@ batting = {
   if(db_has_table(my_db$con, "batting"))
     batting = tbl(my_db, "batting")
   else
-    copy_to_from_local(my_db, Batting, "batting")}
+    copy_to_from_local(my_db, Batting, "batting", mode = "DROPMALFORMED")}
 batting = select(batting, playerID, yearID, teamID, G, AB:H)
 batting = arrange(batting, playerid, yearid, teamid) #lowercased cols, documented bug
 players = group_by(batting, playerid)

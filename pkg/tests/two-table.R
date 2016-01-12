@@ -30,7 +30,7 @@ cond.copy =
     if(db_has_table(src$con, name))
       tbl(src, name)
     else
-      copy_to_from_local(src, data, name)}
+      copy_to_from_local(src, data, name, mode = "DROPMALFORMED")}
 
 flights = cond.copy(my_db, flights, "flights")
 airlines = cond.copy(my_db, airlines, "airlines")
