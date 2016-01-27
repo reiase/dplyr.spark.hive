@@ -69,14 +69,14 @@ To start the thrift server from R, you need one more variable set, `SPARK_HOME`,
 library(httr)
 library(purrr)
 tags = content(GET("https://api.github.com/repos/rzilla/dplyr.spark.hive/tags"))
-version = grep(pattern = "\\d+\\.\\d+\\.\\d+", x = map(tags, "name"), value = TRUE)[[1]]
+version = grep(pattern = "^\\d+\\.\\d+\\.\\d+$", x = map(tags, "name"), value = TRUE)[[1]]
 ```
 
 ```{r, echo=FALSE, results='asis'}
 cat("The current version is", version, ".")
 ```
 
-To install the latest release and its dependencies, enter the following two commands
+To install the latest release and its dependencies, enter the following expression:
 
 ```{r, eval = FALSE}
 install.packages("dplyr.spark.hive", repos = c("http://archive.rzilla.org", unlist(options("repos"))))
