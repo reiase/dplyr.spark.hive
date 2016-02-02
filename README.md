@@ -62,19 +62,18 @@ To start the thrift server from R, you need one more variable set, `SPARK_HOME`,
 
 The current version is 0.5.0 .
 
-To install the latest release and its dependencies, enter the following two commands
+To install the latest release and its dependencies, enter the following expression:
 
 
 ```r
-options(repos = c("http://r.piccolboni.info", unlist(options("repos"))))
-install.packages("dplyr.spark.hive")
+install.packages("dplyr.spark.hive", repos = c("http://archive.rzilla.org", unlist(options("repos"))))
 ```
 
-You can find a number of examples derived from @hadley's own tutorials for dplyr looking under the [tests](https://github.com/piccolbo/dplyr.spark.hive/tree/master/pkg/tests) directory, files `databases.R`, `window-functions.R` and `two-table.R`.
+You can find a number of examples derived from @hadley's own tutorials for dplyr looking under the [tests](https://github.com/rzilla/dplyr.spark.hive/tree/master/pkg/tests) directory, files `databases.R`, `window-functions.R` and `two-table.R`.
 
-For new releases, subscribe to `dplyr.spark.hive`'s Release notes [feed](https://github.com/piccolbo/dplyr.spark.hive/releases.atom).
+For new releases, subscribe to `dplyr.spark.hive`'s Release notes [feed](https://github.com/rzilla/dplyr.spark.hive/releases.atom).
 
-If you notice any problems, please create an item in the [issue tracker](http://github.com/piccolbo/dplyr.spark.hive/issues).
+If you notice any problems, please create an item in the [issue tracker](http://github.com/rzilla/dplyr.spark.hive/issues).
 
 
 ## Backend specific features
