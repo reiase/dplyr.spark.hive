@@ -134,7 +134,7 @@ db_create_table.HS2Connection =
           paste0(field_names, " ", types),
           parens = TRUE,
           collapse = ", ",
-        con = con)}
+          con = con)}
     else
       fields = NULL
     sql =
@@ -191,50 +191,114 @@ sql_escape_ident.HS2Connection =
   function(con, x)
     sql_quote(x, "`")
 
+
+
 #modeled after sql_join methods in http://github.com/hadley/dplyr,
 #under MIT license
 #this is needed because the ON syntax is mandatory in HS2
 sql_join.HS2Connection =
-  function (con, x, y, type = "inner", by = NULL, ...) {
-    join =
-      switch(
-        type,
-        left = sql("LEFT"),
-        inner = sql("INNER"),
-        right = sql("RIGHT"),
-        full = sql("FULL"),
-        stop("Unknown join type:", type, call. = FALSE))
-    by = common_by(by, x, y)
-    x_names = auto_names(x$select)
-    y_names = auto_names(y$select)
-    uniques = unique_names(x_names, y_names, NULL)
-    if(is.null(uniques)) {
-      sel_vars = c(x_names, y_names)}
+  function (con, x, y, type = "inner", by = NULL, ...)
+  {
+    qualify_names =
+      function(left, right, names, con, left_names) {
+        paste0(
+          sql_escape_ident(
+            con,
+            ifelse(
+              names %in% left_names,
+              left,
+              right)),
+          ".",
+          sql_escape_ident(con, names))}
+
+    join <- switch(type, left = sql("LEFT"), inner = sql("INNER"),
+                   right = sql("RIGHT"), full = sql("FULL"), stop("Unknown join type:",
+                                                                  type, call. = FALSE))
+    by <- common_by(by, x, y)
+    x_names <- auto_names(x$select)
+    y_names <- auto_names(y$select)
+    uniques <- unique_names(x_names, y_names, by$x[by$x == by$y])
+    if (is.null(uniques)) {
+      sel_vars <- unique(c(x_names, y_names))
+    }
     else {
-      x = update(x, select = setNames(x$select, uniques$x))
-      y = update(y, select = setNames(y$select, uniques$y))
-      by$x = unname(uniques$x[by$x])
-      by$y = unname(uniques$y[by$y])
-      sel_vars = unique(c(uniques$x, uniques$y))}
-    name.left = unique_name()
-    name.right = unique_name()
-    on =
+      x <- update(x, select = setNames(x$select, uniques$x))
+      y <- update(y, select = setNames(y$select, uniques$y))
+      by$x <- unname(uniques$x[by$x])
+      by$y <- unname(uniques$y[by$y])
+      sel_vars <- unique(c(uniques$x, uniques$y))
+    }
+    name_left = random_table_name()
+    name_right = random_table_name()
+    on <-
       sql_vector(
         paste0(
-          paste(sql_escape_ident(con, name.left),sql_escape_ident(con, by$x), sep = "."),
+          sql_escape_ident(con, name_left),
+          ".",
+          sql_escape_ident(con, by$x),
           " = ",
-          paste(sql_escape_ident(con, name.right), sql_escape_ident(con, by$y), sep = "."),
+          sql_escape_ident(con, name_right),
+          ".",
+          sql_escape_ident(con, by$y),
           collapse = " AND "),
         parens = TRUE)
-    cond = build_sql("ON ", on, con = con)
-    from =
+    cond <- build_sql("ON ", on, con = con)
+    from <-
       build_sql(
-        "SELECT * FROM ", sql_subquery(con, x$query$sql, name.left),
-        "\n\n", join, " JOIN \n\n", sql_subquery(con, y$query$sql, name.right),
+        "SELECT ",
+        sql_vector(
+          qualify_names(name_left, name_right, sel_vars, con, x_names),
+          con = con,
+          parens = FALSE,
+          collapse = ","),
+        " FROM ",
+        sql_subquery(con, x$query$sql, name_left),
+        "\n\n", join, " JOIN \n\n", sql_subquery(con, y$query$sql, name_right),
         "\n\n", cond, con = con)
-    attr(from, "vars") = lapply(sel_vars, as.name)
-    from}
-
+    attr(from, "vars") <- lapply(sel_vars, as.name)
+    from
+  }
+#
+#   function (con, x, y, type = "inner", by = NULL, ...) {
+#     join =
+#       switch(
+#         type,
+#         left = sql("LEFT"),
+#         inner = sql("INNER"),
+#         right = sql("RIGHT"),
+#         full = sql("FULL"),
+#         stop("Unknown join type:", type, call. = FALSE))
+#     by = common_by(by, x, y)
+#     x_names = auto_names(x$select)
+#     y_names = auto_names(y$select)
+#     uniques = unique_names(x_names, y_names, NULL)
+#     if(is.null(uniques)) {
+#       sel_vars = c(x_names, y_names)}
+#     else {
+#       x = update(x, select = setNames(x$select, uniques$x))
+#       y = update(y, select = setNames(y$select, uniques$y))
+#       by$x = unname(uniques$x[by$x])
+#       by$y = unname(uniques$y[by$y])
+#       sel_vars = unique(c(uniques$x, uniques$y))}
+#     name.left = unique_name()
+#     name.right = unique_name()
+#     on =
+#       sql_vector(
+#         paste0(
+#           paste(sql_escape_ident(con, name.left),sql_escape_ident(con, by$x), sep = "."),
+#           " = ",
+#           paste(sql_escape_ident(con, name.right), sql_escape_ident(con, by$y), sep = "."),
+#           collapse = " AND "),
+#         parens = TRUE)
+#     cond = build_sql("ON ", on, con = con)
+#     from =
+#       build_sql(
+#         "SELECT * FROM ", sql_subquery(con, x$query$sql, name.left),
+#         "\n\n", join, " JOIN \n\n", sql_subquery(con, y$query$sql, name.right),
+#         "\n\n", cond, con = con)
+#     attr(from, "vars") = lapply(sel_vars, as.name)
+#     from}
+#
 environment(sql_join.HS2Connection) = environment(select_)
 
 #modeled after sql_semi_join methods in http://github.com/hadley/dplyr,
