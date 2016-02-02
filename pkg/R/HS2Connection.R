@@ -196,37 +196,40 @@ sql_escape_ident.HS2Connection =
 #modeled after sql_join methods in http://github.com/hadley/dplyr,
 #under MIT license
 #this is needed because the ON syntax is mandatory in HS2
+# also works around bug with ambiguous names
 sql_join.HS2Connection =
-  function (con, x, y, type = "inner", by = NULL, ...)
-  {
+  function (con, x, y, type = "inner", by = NULL, ...){
     qualify_names =
       function(left, right, names, con, left_names) {
         paste0(
-          sql_escape_ident(
-            con,
-            ifelse(
-              names %in% left_names,
-              left,
-              right)),
-          ".",
+          ifelse(
+            names %in% left_names,
+            paste0(sql_escape_ident(con, left), "."),
+            ""),
           sql_escape_ident(con, names))}
 
-    join <- switch(type, left = sql("LEFT"), inner = sql("INNER"),
-                   right = sql("RIGHT"), full = sql("FULL"), stop("Unknown join type:",
-                                                                  type, call. = FALSE))
-    by <- common_by(by, x, y)
-    x_names <- auto_names(x$select)
-    y_names <- auto_names(y$select)
-    uniques <- unique_names(x_names, y_names, by$x[by$x == by$y])
+    join =
+      switch(
+        type,
+        left = sql("LEFT"),
+        inner = sql("INNER"),
+        right = sql("RIGHT"),
+        full = sql("FULL"),
+        cross = sql("CROSS"),
+        stop("Unknown join type:", type, call. = FALSE))
+    by = common_by(by, x, y)
+    x_names = auto_names(x$select)
+    y_names = auto_names(y$select)
+    uniques = unique_names(x_names, y_names, by$x[by$x == by$y])
     if (is.null(uniques)) {
-      sel_vars <- unique(c(x_names, y_names))
+      sel_vars = unique(c(x_names, y_names))
     }
     else {
-      x <- update(x, select = setNames(x$select, uniques$x))
-      y <- update(y, select = setNames(y$select, uniques$y))
-      by$x <- unname(uniques$x[by$x])
-      by$y <- unname(uniques$y[by$y])
-      sel_vars <- unique(c(uniques$x, uniques$y))
+      x = update(x, select = setNames(x$select, uniques$x))
+      y = update(y, select = setNames(y$select, uniques$y))
+      by$x = unname(uniques$x[by$x])
+      by$y = unname(uniques$y[by$y])
+      sel_vars = unique(c(uniques$x, uniques$y))
     }
     name_left = random_table_name()
     name_right = random_table_name()
@@ -242,7 +245,7 @@ sql_join.HS2Connection =
           sql_escape_ident(con, by$y),
           collapse = " AND "),
         parens = TRUE)
-    cond <- build_sql("ON ", on, con = con)
+    cond = build_sql("ON ", on, con = con)
     from <-
       build_sql(
         "SELECT ",
@@ -255,7 +258,7 @@ sql_join.HS2Connection =
         sql_subquery(con, x$query$sql, name_left),
         "\n\n", join, " JOIN \n\n", sql_subquery(con, y$query$sql, name_right),
         "\n\n", cond, con = con)
-    attr(from, "vars") <- lapply(sel_vars, as.name)
+    attr(from, "vars") = lapply(sel_vars, as.name)
     from
   }
 #
