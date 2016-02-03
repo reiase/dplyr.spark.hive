@@ -262,47 +262,7 @@ sql_join.HS2Connection =
         "\n\n", if(!is.null(by)) cond, con = con)
     attr(from, "vars") = lapply(sel_vars, as.name)
     from}
-#
-#   function (con, x, y, type = "inner", by = NULL, ...) {
-#     join =
-#       switch(
-#         type,
-#         left = sql("LEFT"),
-#         inner = sql("INNER"),
-#         right = sql("RIGHT"),
-#         full = sql("FULL"),
-#         stop("Unknown join type:", type, call. = FALSE))
-#     by = common_by(by, x, y)
-#     x_names = auto_names(x$select)
-#     y_names = auto_names(y$select)
-#     uniques = unique_names(x_names, y_names, NULL)
-#     if(is.null(uniques)) {
-#       sel_vars = c(x_names, y_names)}
-#     else {
-#       x = update(x, select = setNames(x$select, uniques$x))
-#       y = update(y, select = setNames(y$select, uniques$y))
-#       by$x = unname(uniques$x[by$x])
-#       by$y = unname(uniques$y[by$y])
-#       sel_vars = unique(c(uniques$x, uniques$y))}
-#     name.left = unique_name()
-#     name.right = unique_name()
-#     on =
-#       sql_vector(
-#         paste0(
-#           paste(sql_escape_ident(con, name.left),sql_escape_ident(con, by$x), sep = "."),
-#           " = ",
-#           paste(sql_escape_ident(con, name.right), sql_escape_ident(con, by$y), sep = "."),
-#           collapse = " AND "),
-#         parens = TRUE)
-#     cond = build_sql("ON ", on, con = con)
-#     from =
-#       build_sql(
-#         "SELECT * FROM ", sql_subquery(con, x$query$sql, name.left),
-#         "\n\n", join, " JOIN \n\n", sql_subquery(con, y$query$sql, name.right),
-#         "\n\n", cond, con = con)
-#     attr(from, "vars") = lapply(sel_vars, as.name)
-#     from}
-#
+
 environment(sql_join.HS2Connection) = environment(select_)
 
 #modeled after sql_semi_join methods in http://github.com/hadley/dplyr,
