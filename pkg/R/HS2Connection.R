@@ -217,36 +217,37 @@ sql_join.HS2Connection =
         full = sql("FULL"),
         cross = sql("CROSS"),
         stop("Unknown join type:", type, call. = FALSE))
-    by = common_by(by, x, y)
+    # if(join != sql("CROSS") || !is.null(by))
+    #   by = common_by(by, x, y)
     x_names = auto_names(x$select)
     y_names = auto_names(y$select)
     uniques = unique_names(x_names, y_names, by$x[by$x == by$y])
     if (is.null(uniques)) {
-      sel_vars = unique(c(x_names, y_names))
-    }
+      sel_vars = unique(c(x_names, y_names))}
     else {
       x = update(x, select = setNames(x$select, uniques$x))
       y = update(y, select = setNames(y$select, uniques$y))
-      by$x = unname(uniques$x[by$x])
-      by$y = unname(uniques$y[by$y])
-      sel_vars = unique(c(uniques$x, uniques$y))
-    }
+      if(!is.null(by)) {
+        by$x = unname(uniques$x[by$x])
+        by$y = unname(uniques$y[by$y])}
+      sel_vars = unique(c(uniques$x, uniques$y))}
     name_left = random_table_name()
     name_right = random_table_name()
-    on <-
-      sql_vector(
-        paste0(
-          sql_escape_ident(con, name_left),
-          ".",
-          sql_escape_ident(con, by$x),
-          " = ",
-          sql_escape_ident(con, name_right),
-          ".",
-          sql_escape_ident(con, by$y),
-          collapse = " AND "),
-        parens = TRUE)
-    cond = build_sql("ON ", on, con = con)
-    from <-
+    on =
+      if(!is.null(by)) {
+        sql_vector(
+          paste0(
+            sql_escape_ident(con, name_left),
+            ".",
+            sql_escape_ident(con, by$x),
+            " = ",
+            sql_escape_ident(con, name_right),
+            ".",
+            sql_escape_ident(con, by$y),
+            collapse = " AND "),
+          parens = TRUE)
+        cond = build_sql("ON ", on, con = con)}
+    from =
       build_sql(
         "SELECT ",
         sql_vector(
@@ -256,11 +257,11 @@ sql_join.HS2Connection =
           collapse = ","),
         " FROM ",
         sql_subquery(con, x$query$sql, name_left),
-        "\n\n", join, " JOIN \n\n", sql_subquery(con, y$query$sql, name_right),
-        "\n\n", cond, con = con)
+        "\n\n", join, " JOIN \n\n",
+        sql_subquery(con, y$query$sql, name_right),
+        "\n\n", if(!is.null(by)) cond, con = con)
     attr(from, "vars") = lapply(sel_vars, as.name)
-    from
-  }
+    from}
 #
 #   function (con, x, y, type = "inner", by = NULL, ...) {
 #     join =

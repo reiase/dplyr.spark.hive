@@ -117,9 +117,8 @@ intersect.tbl_HS2 =
 # this looks like it's converged back to the dplyr original
 some_join =
   function (x, y, by = NULL, copy = FALSE, auto_index = FALSE, ..., type) {
-    by = dplyr:::common_by(by, x, y)
-    y = dplyr:::auto_copy(x, y, copy, indexes = if (auto_index)
-      list(by$y))
+    by = if(type != "cross" || !is.null(by)) dplyr:::common_by(by, x, y)
+    y = dplyr:::auto_copy(x, y, copy, indexes = if (auto_index)  list(by$y))
     sql = dplyr::sql_join(x$src$con, x, y, type = type, by = by)
     dplyr:::update.tbl_sql(tbl(x$src, sql), group_by = groups(x))}
 
@@ -132,6 +131,15 @@ right_join.tbl_HS2 =
 full_join.tbl_HS2 =
   function (x, y, by = NULL, copy = FALSE, auto_index = FALSE, ...) {
     some_join(x = x, y = y, by = by, copy = copy, auto_index = auto_index, ..., type = "full")}
+
+#missing dplyr feature
+cross_join =
+  function(x, y, by = NULL, copy = FALSE, ...) {
+    UseMethod("cross_join")}
+
+cross_join.tbl_HS2 =
+  function(x, y, by = NULL, copy = FALSE, auto_index = FALSE, ...) {
+    some_join(x = x, y = y, by = by, copy = copy, auto_index = auto_index, ..., type = "cross")}
 
 # refresh.tbl_sql =
 #   function(x, src = refresh(x$src), ...) {
