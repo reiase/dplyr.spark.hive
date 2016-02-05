@@ -76,7 +76,7 @@ CSVData =
     mode = c("PERMISSIVE", "DROPMALFORMED", "FAILFAST"),
     charset = 'UTF-8',
     inferSchema = TRUE,
-    nullValues = "NA",
+    nullValue = "NA",
     comment = "#")
     ExternalData(
       "com.databricks.spark.csv",
@@ -89,6 +89,7 @@ CSVData =
         mode = match.arg(mode),
         charset = charset,
         inferSchema = tolower(as.character(inferSchema)),
+        nullValue = nullValue,
         comment = comment))
 
 JDBCData =
