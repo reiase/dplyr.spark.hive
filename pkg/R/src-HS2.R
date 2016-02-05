@@ -95,7 +95,7 @@ src_translate_env.src_HS2 =
             function(x, d = 0) build_sql(sql("bround"), list(x, as.integer(d))),
           as.character = function (x) build_sql("CAST(", x, " AS STRING)"),
           as.numeric = function (x) build_sql("CAST(", x, " AS DOUBLE)")
-          ),
+        ),
       aggregate =
         sql_translator(
           .parent = base_agg,
@@ -117,7 +117,7 @@ src_translate_env.src_HS2 =
           lag = function(x, n = 1L, default = NA, order = NULL) base_win$lag(x, as.integer(n), default, order),
           lead = function(x, n = 1L, default = NA, order = NULL) base_win$lead(x, as.integer(n), default, order),
           ntile = function (order_by, n) base_win$ntile(order_by, as.integer(n))
-          ))
+        ))
 
 dedot = function(x) gsub("\\.", "_", x)
 
@@ -150,9 +150,9 @@ load_to.src_Hive =
         if (is.data.frame(schema)){
           setNames(db_data_type(dest$con, schema), colnames(schema))}
         else stop("Don't know how to extract a schema from this")}}
-    if(!name == dedot(name))
-      warning("Replacing dot in table name with _ to appease spark")
-    name = dedot(name)
+    if(!name == tolower(dedot(name)))
+      warning("Replacing dots in table name with _ and lowercasing because of backend limitations")
+    name = tolower(dedot(name))
     db_create_table(
       con = dest$con,
       table = name,
@@ -179,7 +179,7 @@ tbls.src_sql =
     frame = parent.frame()
     tblnames = db_list_tables(src$con)
     tblnames = keep(tblnames, ~db_has_table(my_db$con,.))
-  invisible(map(tblnames, ~assign(., tbl(my_db, .), envir = frame)))}
+    invisible(map(tblnames, ~assign(., tbl(my_db, .), envir = frame)))}
 
 tbls.default = function(src, ...) stop("Not implemented for non-sql srcs")
 
