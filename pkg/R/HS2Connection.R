@@ -46,8 +46,7 @@ db_query_fields.HiveConnection =
         x =
           db_query_fields.HS2Connection(con, sql),
         split = "\\."),
-      head,
-      -1)}
+      2)}
 
 db_explain.HS2Connection = dplyr:::db_explain.MySQLConnection
 
@@ -162,7 +161,15 @@ db_save_query.HS2Connection =
     name = tolower(name)
     if(temporary)
       stop("Compute into temporary not supported yet. Set temporary = FALSE")
-    dplyr:::db_save_query.DBIConnection(con, sql, name, temporary, ...)}
+    sql =
+      build_sql(
+        "CREATE ",
+        if(temporary) sql("TEMPORARY "),
+        "TABLE ",
+        ident(name),
+        " AS ", sql,
+        con = con)
+    RJDBC::dbSendUpdate(con, sql)}
 
 db_explain.HS2Connection =
   function(con, sql, ...)
