@@ -44,7 +44,7 @@ src_HS2 =
     src_sql(
       c(class, "HS2"),
       con,
-      info = list("Spark at", host = host, port = port),
+      info = list(paste(class, "at"), host = host, port = port),
       env = final.env,
       call = match.call(),
       calling.env = pf)}
