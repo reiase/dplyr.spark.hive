@@ -252,8 +252,8 @@ sql_join.HS2Connection =
             ".",
             sql_escape_ident(con, by$y),
             collapse = " AND "),
-          parens = TRUE)
-        cond = build_sql("ON ", on, con = con)}
+          parens = TRUE)}
+    cond = build_sql("ON ", on, con = con)
     from =
       build_sql(
         "SELECT ",
