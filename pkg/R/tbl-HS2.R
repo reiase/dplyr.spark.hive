@@ -65,12 +65,12 @@ mutate_.tbl_HS2 =
     for(i in 1:length(input))
       input = partial_eval_mod(input, .data, input)
     .data$mutate = TRUE
-    no.dup.select = .data$select[!as.character(.data$select) %in% names(input)]
+    no.dup.select =
+      .data$select[
+        !gsub(as.character(.data$select), pattern = "`", replacement = "") %in%
+          names(input)]
     new = update(.data, select = c(no.dup.select, input))
-    if (dplyr:::uses_window_fun(input, .data)) {
-      collapse(new) }
-    else {
-      new}}
+    collapse(new) }
 
 #modeled after filter_ methods in http://github.com/hadley/dplyr,
 #under MIT license
