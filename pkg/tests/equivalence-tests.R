@@ -148,7 +148,7 @@ equiv.test =
         x = dfgen(),
         rx = expr.gen(x),
         name = dplyr:::random_table_name(), {
-          on.exit(db_drop_table(table = paste0('`', name,'`'), con = src$con))
+          on.exit(db_drop_table(table = name, con = src$con))
           retval =
             cmp(
               rx(x),
