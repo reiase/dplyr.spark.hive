@@ -117,7 +117,7 @@ src_translate_env.src_HS2 =
           lag = function(x, n = 1L, default = NA, order = NULL) base_win$lag(x, as.integer(n), default, order),
           lead = function(x, n = 1L, default = NA, order = NULL) base_win$lead(x, as.integer(n), default, order),
           ntile = function (order_by, n) base_win$ntile(order_by, as.integer(n))
-        ))
+          ))
 
 dedot = function(x) gsub("\\.", "_", x)
 
@@ -179,7 +179,7 @@ tbls.src_sql =
     frame = parent.frame()
     tblnames = db_list_tables(src$con)
     tblnames = keep(tblnames, ~db_has_table(my_db$con,.))
-    invisible(map(tblnames, ~assign(., tbl(my_db, .), envir = frame)))}
+  invisible(map(tblnames, ~assign(., tbl(my_db, .), envir = frame)))}
 
 tbls.default = function(src, ...) stop("Not implemented for non-sql srcs")
 
