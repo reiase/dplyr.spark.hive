@@ -28,7 +28,7 @@ batting = {
     batting = tbl(my_db, "batting")
   else
     copy_to_from_local(my_db, Batting, "batting", mode = "DROPMALFORMED")}
-batting = select(batting, playerID, yearID, teamID, G, AB:H)
+batting = select(batting, playerid, yearid, teamid, g, ab:h)
 batting = arrange(batting, playerid, yearid, teamid) #lowercased cols, documented bug
 players = group_by(batting, playerid)
 cache(batting)
