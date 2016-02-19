@@ -95,7 +95,8 @@ src_translate_env.src_HS2 =
             function(x, d = 0) build_sql(sql("bround"), list(x, as.integer(d))),
           as.character = function (x) build_sql("CAST(", x, " AS STRING)"),
           as.numeric = function (x) build_sql("CAST(", x, " AS DOUBLE)"),
-          `[` = function(x, y) build_sql(x, "[", y, "]")),
+          `[` = function(x, y) build_sql(x, "[", y, "]"),
+          get = function(x, y) build_sql(x, ".", y)),
       aggregate =
         sql_translator(
           .parent = base_agg,
