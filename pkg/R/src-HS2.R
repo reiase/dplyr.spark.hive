@@ -184,11 +184,25 @@ tbls.src_sql =
 
 tbls.default = function(src, ...) stop("Not implemented for non-sql srcs")
 
-# refresh = function(x, ...) UseMethod("refresh")
-#
-# refresh.src_HS2 =
-#   function(x, ...){
-#     if(!identical(x$call$start.server, FALSE))
-#       stop.server()
-#     eval(x$call, envir = x$calling.env)}
+fetch_send = function(query, src) DBI::dbFetch(DBI::dbSendQuery(src$con, query))
+
+add_jar = function(src, jar) UseMethod("add_jar")
+
+
+add_jar.src_HS2 =
+  function(src, jar)
+    fetch_send(paste0("add jar ", jar), src)
+
+add_function = function(src, name , class) UseMethod("add_function")
+
+add_function.src_HS2 =
+  function(src, name, class)
+    fetch_send(paste0("Create temporary function ", name, " as '", class, "'"), src)
+
+add_extension = function(src, functions, jar) UseMethod ("add_extension")
+
+add_extension.src_HS2 =
+  function(src, functions, jar) {
+    add_jar(src, jar)
+    lmap(functions, function(x) add_function(src, names(x), x))}
 
