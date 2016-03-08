@@ -66,16 +66,17 @@ mutate_.tbl_HS2 =
   function (.data, ..., .dots) {
     dots = all_dots(.dots, ..., all_named = TRUE)
     input = partial_eval_mod(dots, .data)
-    input = partial_eval_mod(input, NULL, .data$select)
+    if(!is.null(names(.data$select)))
+      input = partial_eval_mod(input, NULL, setNames(.data$select, dplyr:::auto_names(.data$select)))
     for(i in 1:length(input))
       input = partial_eval_mod(input, .data, input)
     .data$mutate = TRUE
     no.dup.select =
       .data$select[
-        !gsub(as.character(.data$select), pattern = "`", replacement = "") %in%
+        !gsub(
+          dplyr:::auto_names(.data$select), pattern = "`", replacement = "") %in%
           names(input)]
-    new = update(.data, select = c(no.dup.select, input))
-    new}
+    update(.data, select = c(no.dup.select, input))}
 
 #modeled after filter_ methods in http://github.com/hadley/dplyr,
 #under MIT license
