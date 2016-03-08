@@ -193,7 +193,7 @@ add_jar.src_HS2 =
   function(src, jar)
     fetch_send(paste0("add jar ", jar), src)
 
-add_function = function(src, name , class) UseMethod("add_function")
+add_function = function(src, name , class) UseMethod("add_function")
 
 add_function.src_HS2 =
   function(src, name, class)
