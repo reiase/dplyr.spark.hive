@@ -66,6 +66,7 @@ mutate_.tbl_HS2 =
   function (.data, ..., .dots) {
     dots = all_dots(.dots, ..., all_named = TRUE)
     input = partial_eval_mod(dots, .data)
+    input = partial_eval_mod(input, NULL, .data$select)
     for(i in 1:length(input))
       input = partial_eval_mod(input, .data, input)
     .data$mutate = TRUE
@@ -74,22 +75,16 @@ mutate_.tbl_HS2 =
         !gsub(as.character(.data$select), pattern = "`", replacement = "") %in%
           names(input)]
     new = update(.data, select = c(no.dup.select, input))
-    collapse(new) }
+    new}
 
 #modeled after filter_ methods in http://github.com/hadley/dplyr,
 #under MIT license
 # This adds parens to clarify priority in cascaded filters
-# adds collapse when new cols used in filter
 filter_.tbl_HS2 =
   function (.data, ..., .dots)   {
     dots = all_dots(.dots, ...)
     lapply(seq_along(dots), function(i) dots[[i]]$expr <<- call("(", dots[[i]]$expr))
     input = partial_eval(dots, .data)
-    if(
-      any(
-        names(.data$select) %in%
-        flatten(all.vars(input[[1]]))))
-      .data = collapse(.data)
     update(.data, where = c(.data$where, input))}
 
 assert.compatible =
