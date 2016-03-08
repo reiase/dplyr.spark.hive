@@ -14,8 +14,9 @@
 
 convert.from.DB =
   function(type) {
+    type = tolower(type)
     switch(
-      tolower(type),
+      type,
       tinyint = as.integer,
       smallint = as.integer,
       int = as.integer,
@@ -30,7 +31,10 @@ convert.from.DB =
       date = as.Date,
       varchar = as.character,
       char = as.character,
-      stop("Don't know what to map ", type, " to"))}
+      if(grepl(pattern = "decimal\\(\\d+,\\d+\\)", x = type, perl = TRUE)[1])
+        as.numeric
+      else
+        stop("Don't know what to map ", type, " to"))}
 
 # this uses  a compute then fetch approach to be able to query the result schema
 # and do type conversions, it's a work around for some type blunder in fetch
