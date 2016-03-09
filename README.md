@@ -60,7 +60,7 @@ To start the thrift server from R, you need one more variable set, `SPARK_HOME`,
 
 
 
-The current version is 0.5.0 .
+The current version is 0.6.0 .
 
 To install the latest release and its dependencies, enter the following expression:
 
