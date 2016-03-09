@@ -106,3 +106,7 @@ For highly technical reasons which I won't bother you with, `copy_to` is not sup
 :    create a `tbl` object for each table in SparkSQL or Hive.
 
 
+## Feedback
+
+Please report problem and suggest features by submitting an [issue](https://github.com/rzilla/dplyr.spark.hive/issues). You may also want to check current issues for known problems. More general open ended discussion can take place on the [rzilla forum](https://groups.google.com/forum/#!forum/rzilla)
+
