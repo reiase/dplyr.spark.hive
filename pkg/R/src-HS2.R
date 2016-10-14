@@ -33,10 +33,10 @@ dbConnect_retry =
     else dbConnect(drv = dr, url = url, ...)}
 
 src_HS2 =
-  function(host, port, class, final.env, ...) {
+  function(host, port, class, final.env, dbname, ...) {
     driverclass = "org.apache.hive.jdbc.HiveDriver"
     dr = JDBC(driverclass, Sys.getenv("HADOOP_JAR"))
-    url = paste0("jdbc:hive2://", host, ":", port)
+    url = paste0("jdbc:hive2://", host, ":", port, "/", dbname)
     con.class = paste0(class, "Connection")
     con =
       new(con.class, dbConnect_retry(dr, url, retry = 100, ...))
@@ -59,8 +59,9 @@ src_Hive =
       first.not.empty(
         Sys.getenv("HIVE_SERVER2_THRIFT_PORT"),
         10000),
+    dbname = "default",
     ...){
-    src_HS2(host, port, "Hive", NULL, ...)}
+    src_HS2(host, port, "Hive", NULL, dbname, ...)}
 
 src_desc.src_HS2 =
   function(x) {
@@ -205,4 +206,3 @@ add_extension.src_HS2 =
   function(src, functions, jar) {
     add_jar(src, jar)
     lmap(functions, function(x) add_function(src, names(x), x))}
-
